@@ -1,0 +1,502 @@
+/* UserManagement Component Styles - Unique class names with um- prefix */
+.um-container {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e5e7eb;
+  height: fit-content;
+}
+
+.um-container h3 {
+  color: #1f2937;
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.um-header {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 24px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.um-stats-card {
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 16px;
+  padding: 20px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+.um-stats-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+}
+
+.um-glass-card {
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.um-team-member-card {
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 16px;
+  padding: 20px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+.um-team-member-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+}
+
+.um-controls {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.um-control-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 120px;
+}
+
+.um-control-group label {
+  font-size: 12px;
+  color: #6b7280;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.um-control-group select,
+.um-control-group input {
+  padding: 8px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+  transition: border-color 0.2s;
+}
+
+.um-control-group select:focus,
+.um-control-group input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.um-users-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.um-user-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+  background: #f9fafb;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  transition: all 0.2s;
+}
+
+.um-user-item:hover {
+  background: #f3f4f6;
+  border-color: #d1d5db;
+}
+
+.um-user-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+}
+
+.um-user-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.um-user-details {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.um-user-name {
+  font-weight: 600;
+  color: #1f2937;
+  font-size: 14px;
+}
+
+.um-user-email {
+  color: #6b7280;
+  font-size: 12px;
+}
+
+.um-user-role {
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.um-user-role.admin {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.um-user-role.worker {
+  background: #dbeafe;
+  color: #2563eb;
+}
+
+.um-user-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.um-action-btn {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.um-action-btn.edit {
+  background: #fef3c7;
+  color: #d97706;
+}
+
+.um-action-btn.edit:hover {
+  background: #fde68a;
+}
+
+.um-action-btn.delete {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.um-action-btn.delete:hover {
+  background: #fecaca;
+}
+
+.um-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.um-empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: #6b7280;
+}
+
+.um-empty-state p {
+  margin: 8px 0 0 0;
+  font-size: 14px;
+}
+
+/* Team Performance Table - Mobile Optimized */
+.um-performance-table {
+  width: 100%;
+  overflow-x: auto;
+  border-radius: 12px;
+  background: white;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.um-performance-table table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 600px;
+}
+
+.um-performance-table th,
+.um-performance-table td {
+  padding: 12px 16px;
+  text-align: left;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.um-performance-table th {
+  background: #f9fafb;
+  font-weight: 600;
+  color: #374151;
+  font-size: 14px;
+}
+
+.um-performance-table td {
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.um-performance-table tr:hover {
+  background: #f9fafb;
+}
+
+/* Mobile Performance Cards */
+.um-performance-cards {
+  display: none;
+}
+
+.um-performance-card {
+  background: white;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e5e7eb;
+}
+
+.um-performance-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.um-performance-card-name {
+  font-weight: 600;
+  color: #1f2937;
+  font-size: 16px;
+}
+
+.um-performance-card-role {
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.um-performance-card-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.um-performance-stat {
+  text-align: center;
+  padding: 8px;
+  background: #f9fafb;
+  border-radius: 8px;
+}
+
+.um-performance-stat-value {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 4px;
+}
+
+.um-performance-stat-label {
+  font-size: 12px;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.um-performance-card-details {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.um-performance-detail {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.um-performance-detail:last-child {
+  margin-bottom: 0;
+}
+
+.um-performance-detail-label {
+  font-size: 13px;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.um-performance-detail-value {
+  font-size: 13px;
+  color: #1f2937;
+  font-weight: 600;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .um-container {
+    padding: 16px;
+  }
+  
+  .um-header {
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+  
+  .um-controls {
+    flex-direction: column;
+  }
+  
+  .um-control-group {
+    min-width: auto;
+  }
+  
+  .um-user-item {
+    padding: 12px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  
+  .um-user-info {
+    width: 100%;
+  }
+  
+  .um-user-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  /* Hide table and show cards on mobile */
+  .um-performance-table {
+    display: none;
+  }
+  
+  .um-performance-cards {
+    display: block;
+  }
+
+  /* Grid adjustments for mobile */
+  .grid {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+
+  .lg\\:grid-cols-2,
+  .lg\\:grid-cols-3,
+  .lg\\:grid-cols-4,
+  .xl\\:grid-cols-3,
+  .md\\:grid-cols-2 {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Team member cards mobile optimization */
+  .um-team-member-card {
+    padding: 16px;
+  }
+
+  .um-team-member-card .grid-cols-2 {
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+  }
+
+  /* Stack team member stats vertically on mobile */
+  .um-team-member-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  /* Better mobile button spacing */
+  .um-team-member-card .flex.items-center.space-x-1 {
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  /* Improve mobile modal spacing */
+  .um-glass-card {
+    padding: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .um-container {
+    padding: 12px;
+  }
+  
+  .um-header {
+    padding: 12px;
+  }
+
+  .um-performance-card {
+    padding: 12px;
+  }
+
+  .um-performance-card-stats {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  /* Single column layout for very small screens */
+  .um-performance-stat {
+    padding: 6px;
+  }
+
+  .um-performance-stat-value {
+    font-size: 16px;
+  }
+
+  /* Ensure buttons remain accessible on small screens */
+  .um-action-btn {
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+
+  /* Improve text readability on small screens */
+  .um-team-member-card h3 {
+    font-size: 14px !important;
+  }
+
+  .um-team-member-card .text-2xl {
+    font-size: 1.5rem !important;
+  }
+}
