@@ -568,13 +568,13 @@ ON CONFLICT (name) DO UPDATE SET id = EXCLUDED.id;
 
 -- Insert admin and workers with specific IDs to match the application
 INSERT INTO store_users (id, name, role, pin, store_id) VALUES
-    (gen_random_uuid(), 'Wissem', 'admin', '1234', NULL), -- Admin can access all stores
-    ('6ebd3c48-3fbf-4c98-8c20-156e8f3dbea0', 'Mohamed Amine Slama', 'worker', '1001', NULL),   -- Workers can work at any store
-    (gen_random_uuid(), 'Aziz Bounaaja', 'worker', '1002', NULL),
-    (gen_random_uuid(), 'Yacine Rziga', 'worker', '2001', NULL),
-    (gen_random_uuid(), 'Adam Jbali', 'worker', '2002', NULL),
-    (gen_random_uuid(), 'Wael', 'worker', '3001', NULL),
-    (gen_random_uuid(), 'worker', 'worker', '3002', NULL)
+    (gen_random_uuid(), 'Wissem', 'admin', '596423', NULL), -- Admin can access all stores
+    ('6ebd3c48-3fbf-4c98-8c20-156e8f3dbea0', 'Mohamed Amine', 'worker', '060604', NULL),   -- Workers can work at any store
+    (gen_random_uuid(), 'Aziz Bounaaja', 'worker', '125678', NULL),
+    (gen_random_uuid(), 'Yacine Rziga', 'worker', '230165', NULL),
+    (gen_random_uuid(), 'Adam', 'worker', '109035', NULL),
+    (gen_random_uuid(), 'Wael', 'worker', '653298', NULL),
+    (gen_random_uuid(), 'Hamza', 'worker', '125452', NULL)
 ON CONFLICT (pin) DO UPDATE SET id = EXCLUDED.id;
 
 -- Insert sample products
@@ -647,6 +647,7 @@ INSERT INTO products (name, category, price, default_ml) VALUES
     ('Vozol 20K', 'puffs', 0, NULL),
     ('Vozol 40K', 'puffs', 0, NULL),
     ('Vozol 50K', 'puffs', 0, NULL),
+    ('WOTOFO NexBar 10K', 'puffs', 0, NULL),
     ('WOTOFO NexBar 20K', 'puffs', 0, NULL),
     ('WOTOFO NexBar 18K', 'puffs', 0, NULL),
     ('NexPod', 'puffs', 0, NULL),
@@ -3710,6 +3711,164 @@ CREATE TRIGGER trigger_low_stock_notification
     AFTER UPDATE OR DELETE ON store_inventory
     FOR EACH ROW
     EXECUTE FUNCTION check_low_stock();
+
+-- ========================================
+-- FD (FONT DE CAISSE) FUNCTIONALITY
+-- ========================================
+
+-- FD (Font de Caisse) Table - tracks daily cash fund for each store
+CREATE TABLE IF NOT EXISTS fd_records (
+    id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    store_id uuid REFERENCES stores(id) ON DELETE CASCADE NOT NULL,
+    user_id uuid REFERENCES store_users(id) ON DELETE CASCADE NOT NULL, -- Worker who entered the FD
+    fd_date date NOT NULL, -- Date for which this FD is set (tomorrow's date when entered)
+    amount numeric(10,3) NOT NULL CHECK (amount >= 0), -- FD amount in TND with millimes
+    shift_number integer CHECK (shift_number IN (1, 2)) NOT NULL, -- Which shift worker entered this
+    notes text, -- Optional notes about the FD
+    created_at timestamp with time zone DEFAULT now(),
+    
+    -- Ensure only one FD record per store per date
+    UNIQUE(store_id, fd_date)
+);
+
+-- Disable RLS for FD records initially
+ALTER TABLE fd_records DISABLE ROW LEVEL SECURITY;
+
+-- Create indexes for faster queries
+CREATE INDEX IF NOT EXISTS idx_fd_records_store_date ON fd_records(store_id, fd_date);
+CREATE INDEX IF NOT EXISTS idx_fd_records_date ON fd_records(fd_date);
+
+-- Add RPC function to get FD records for admin
+CREATE OR REPLACE FUNCTION get_fd_records(
+    p_store_id uuid DEFAULT NULL,
+    p_start_date date DEFAULT NULL,
+    p_end_date date DEFAULT NULL
+)
+RETURNS TABLE (
+    id uuid,
+    store_id uuid,
+    store_name text,
+    user_id uuid,
+    user_name text,
+    fd_date date,
+    amount numeric,
+    shift_number integer,
+    notes text,
+    created_at timestamp with time zone
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    RETURN QUERY
+    SELECT 
+        f.id,
+        f.store_id,
+        s.name as store_name,
+        f.user_id,
+        u.name as user_name,
+        f.fd_date,
+        f.amount,
+        f.shift_number,
+        f.notes,
+        f.created_at
+    FROM fd_records f
+    JOIN stores s ON f.store_id = s.id
+    JOIN store_users u ON f.user_id = u.id
+    WHERE 
+        (p_store_id IS NULL OR f.store_id = p_store_id)
+        AND (p_start_date IS NULL OR f.fd_date >= p_start_date)
+        AND (p_end_date IS NULL OR f.fd_date <= p_end_date)
+    ORDER BY f.fd_date DESC, s.name, f.shift_number;
+END;
+$$;
+
+-- Add RPC function to set FD for tomorrow
+CREATE OR REPLACE FUNCTION set_fd_for_tomorrow(
+    p_user_id uuid,
+    p_store_id uuid,
+    p_amount numeric,
+    p_shift_number integer,
+    p_notes text DEFAULT NULL
+)
+RETURNS json
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    v_tomorrow_date date;
+    v_result json;
+    v_fd_record fd_records%ROWTYPE;
+BEGIN
+    -- Calculate tomorrow's date
+    v_tomorrow_date := (CURRENT_DATE + INTERVAL '1 day')::date;
+    
+    -- Insert or update FD record for tomorrow
+    INSERT INTO fd_records (store_id, user_id, fd_date, amount, shift_number, notes)
+    VALUES (p_store_id, p_user_id, v_tomorrow_date, p_amount, p_shift_number, p_notes)
+    ON CONFLICT (store_id, fd_date)
+    DO UPDATE SET 
+        amount = EXCLUDED.amount,
+        user_id = EXCLUDED.user_id,
+        shift_number = EXCLUDED.shift_number,
+        notes = EXCLUDED.notes,
+        created_at = now()
+    RETURNING * INTO v_fd_record;
+    
+    -- Return success result
+    v_result := json_build_object(
+        'success', true,
+        'message', 'FD set successfully for tomorrow',
+        'fd_date', v_tomorrow_date,
+        'amount', v_fd_record.amount,
+        'id', v_fd_record.id
+    );
+    
+    RETURN v_result;
+    
+EXCEPTION WHEN OTHERS THEN
+    -- Return error result
+    v_result := json_build_object(
+        'success', false,
+        'message', 'Failed to set FD: ' || SQLERRM
+    );
+    
+    RETURN v_result;
+END;
+$$;
+
+-- Add RPC function to get today's FD
+CREATE OR REPLACE FUNCTION get_today_fd(p_store_id uuid)
+RETURNS TABLE (
+    id uuid,
+    amount numeric,
+    user_name text,
+    shift_number integer,
+    notes text,
+    created_at timestamp with time zone
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    RETURN QUERY
+    SELECT 
+        f.id,
+        f.amount,
+        u.name as user_name,
+        f.shift_number,
+        f.notes,
+        f.created_at
+    FROM fd_records f
+    JOIN store_users u ON f.user_id = u.id
+    WHERE f.store_id = p_store_id 
+    AND f.fd_date = CURRENT_DATE
+    LIMIT 1;
+END;
+$$;
+
+-- Add comments for FD functionality
+COMMENT ON TABLE fd_records IS 'Tracks daily FD (Font de Caisse/Cash Fund) amounts set by 2nd shift workers for the next day';
+COMMENT ON FUNCTION set_fd_for_tomorrow IS 'Sets the FD amount for tomorrow when a 2nd shift worker ends their shift';
+COMMENT ON FUNCTION get_fd_records IS 'Retrieves FD records for admin dashboard with optional filtering';
+COMMENT ON FUNCTION get_today_fd IS 'Gets today''s FD record for a specific store';
 
 -- ========================================
 -- SECURITY ENHANCEMENTS SUMMARY

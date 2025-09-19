@@ -305,9 +305,21 @@ export const useWorkerDashboard = (user) => {
   }
 
   // End shift
-  const endShift = async () => {
+  const endShift = async (onFDRequired = null) => {
     setLoading(true)
     try {
+      // Check if this is a 2nd shift worker - they need to set FD for tomorrow
+      const isSecondShift = currentShift?.shift_number === 2
+      
+      if (isSecondShift && onFDRequired) {
+        // Call the FD callback before ending the shift
+        const shouldContinue = await onFDRequired()
+        if (!shouldContinue) {
+          setLoading(false)
+          return // Don't end shift if FD popup was cancelled
+        }
+      }
+
       const { data, error } = await supabase.rpc('end_shift', {
         shift_id: currentShift.id
       })

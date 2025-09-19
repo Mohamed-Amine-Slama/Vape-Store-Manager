@@ -111,8 +111,13 @@ export function Button({
       onTouchStart={(e) => {
         if (!disabled && isMobile) {
           e.target.style.transform = 'scale(0.98)'
-          if (navigator.vibrate) {
-            navigator.vibrate(50)
+          // Only vibrate if user has interacted with the page
+          if (navigator.vibrate && document.hasFocus()) {
+            try {
+              navigator.vibrate(50)
+            } catch (error) {
+              // Silently ignore vibration errors
+            }
           }
         }
       }}
@@ -860,3 +865,5 @@ export function Badge({ children, variant = 'default', className }) {
     </span>
   )
 }
+
+export { default as CustomDropdown } from './CustomDropdown'

@@ -1,19 +1,23 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useAuth } from '../contexts/AuthContext'
 import { useWorkerDashboard } from '../hooks'
+import { useFD } from '../hooks/useFD'
 import {
   WorkerHeader,
   TodayShifts,
   NavigationTabs,
   RecordSale,
   ShiftControl,
-  SalesHistory
+  SalesHistory,
+  TodayFD
 } from '../components/worker'
 import WorkerTransactions from '../components/WorkerTransactions'
+import FDInputPopup from '../components/FDInputPopup'
 import './Worker.css'
 
 const Worker = () => {
   const { user, logout } = useAuth()
+  const [showFDPopup, setShowFDPopup] = useState(false)
   
   const {
     // State
@@ -38,6 +42,51 @@ const Worker = () => {
     loadData
   } = useWorkerDashboard(user)
 
+  const { setFDForTomorrow, todayFD, loading: fdLoading } = useFD(storeInfo?.id)
+
+  // Handle FD submission
+  const handleFDSubmit = async (fdData) => {
+    if (!user || !storeInfo || !currentShift) {
+      alert('Missing required information for FD submission')
+      return
+    }
+
+    const result = await setFDForTomorrow(
+      user.id,
+      storeInfo.id,
+      fdData.amount,
+      currentShift.shift_number,
+      fdData.notes
+    )
+
+    if (result.success) {
+      setShowFDPopup(false)
+      // Continue with ending the shift
+      return true
+    } else {
+      alert(`Failed to set FD: ${result.error}`)
+      return false
+    }
+  }
+
+  // Handle shift end with FD check
+  const handleEndShift = async () => {
+    // Check if this is a 2nd shift worker
+    if (currentShift?.shift_number === 2) {
+      return new Promise((resolve) => {
+        setShowFDPopup(true)
+        // The FD popup will handle the resolution
+        window.fdPromiseResolve = resolve
+      })
+    }
+    return true // For 1st shift, just continue
+  }
+
+  // Enhanced end shift function
+  const handleEndShiftWithFD = () => {
+    endShift(handleEndShift)
+  }
+
   return (
     <div className="worker-dashboard">
       {/* Header */}
@@ -52,6 +101,13 @@ const Worker = () => {
         <TodayShifts 
           storeInfo={storeInfo}
           todayShifts={todayShifts}
+        />
+
+        {/* Today's FD */}
+        <TodayFD 
+          todayFD={todayFD}
+          loading={fdLoading}
+          storeName={storeInfo?.name || ''}
         />
 
         {/* Navigation Tabs */}
@@ -83,7 +139,7 @@ const Worker = () => {
               shiftNumber={shiftNumber}
               loading={loading}
               onStartShift={startShift}
-              onEndShift={endShift}
+              onEndShift={handleEndShiftWithFD}
               onRefreshData={loadData}
             />
 
@@ -102,6 +158,29 @@ const Worker = () => {
           </div>
         )}
       </div>
+
+      {/* FD Input Popup */}
+      <FDInputPopup
+        isOpen={showFDPopup}
+        onClose={() => {
+          setShowFDPopup(false)
+          // Resolve the promise with false to cancel shift end
+          if (window.fdPromiseResolve) {
+            window.fdPromiseResolve(false)
+            window.fdPromiseResolve = null
+          }
+        }}
+        onSubmit={async (fdData) => {
+          const success = await handleFDSubmit(fdData)
+          if (success && window.fdPromiseResolve) {
+            window.fdPromiseResolve(true)
+            window.fdPromiseResolve = null
+          }
+        }}
+        loading={fdLoading}
+        storeName={storeInfo?.name || ''}
+        shiftNumber={currentShift?.shift_number || 2}
+      />
     </div>
   )
 }

@@ -10,6 +10,7 @@ import UserManagement from '../components/UserManagement'
 import ProductCatalog from '../components/ProductCatalog'
 import InventoryManager from '../components/InventoryManager'
 import NotificationsPopup from '../components/NotificationsPopup'
+import FDManagement from '../components/FDManagement'
 import { exportToCSV } from '../lib/utils'
 import { supabase } from '../lib/supabase'
 import { 
@@ -28,7 +29,8 @@ import {
   Bell,
   Search,
   Store,
-  CreditCard
+  CreditCard,
+  DollarSign
 } from 'lucide-react'
 
 export default function Admin() {
@@ -84,6 +86,12 @@ export default function Admin() {
       label: 'Inventory', 
       icon: Package,
       description: 'Manage Store Inventory'
+    },
+    { 
+      id: 'fd', 
+      label: 'FD Management', 
+      icon: DollarSign,
+      description: 'Font de Caisse Records'
     },
   ]
 
@@ -265,6 +273,12 @@ export default function Admin() {
         return (
           <div className="fade-in">
             <ProductCatalog />
+          </div>
+        )
+      case 'fd':
+        return (
+          <div className="fade-in">
+            <FDManagement />
           </div>
         )
       default:
