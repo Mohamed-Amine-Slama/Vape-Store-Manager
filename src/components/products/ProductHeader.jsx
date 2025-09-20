@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button } from '../ui'
+import { Button, AddButton } from '../ui'
 import { Package, Plus, RefreshCw } from 'lucide-react'
 
 const ProductHeader = ({
@@ -14,51 +14,63 @@ const ProductHeader = ({
   isMobile
 }) => {
   return (
-    <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6 mb-6">
+    <div className="rounded-xl p-6 mb-6 relative overflow-hidden" style={{ backgroundColor: 'var(--bg-card)', boxShadow: 'var(--shadow-lg)', border: '1px solid var(--border-primary)' }}>
+      {/* Top accent border */}
+      <div style={{ 
+        position: 'absolute', 
+        top: 0, 
+        left: 0, 
+        right: 0, 
+        height: '4px', 
+        background: 'linear-gradient(90deg, var(--accent-vapor), var(--accent-purple))',
+        borderTopLeftRadius: '0.75rem',
+        borderTopRightRadius: '0.75rem'
+      }}></div>
       {/* Header */}
       <div className={`flex ${isMobile ? 'flex-col space-y-4' : 'justify-between items-center'} mb-6`}>
         <div className="flex items-center space-x-3">
-          <div className="p-3 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-xl">
+          <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg, var(--accent-vapor), var(--accent-purple))' }}>
             <Package className="h-6 w-6 text-white" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Product Catalog</h1>
-            <p className="text-gray-600">
+            <h1 className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>Product Catalog</h1>
+            <p style={{ color: 'var(--text-secondary)' }}>
               Manage your product inventory and categories
             </p>
           </div>
         </div>
         
-        <div className={`flex ${isMobile ? 'flex-col space-y-2' : 'items-center space-x-3'}`}>
+        <div className={`flex ${isMobile ? 'items-center space-x-4 w-full' : 'items-center space-x-3'}`}>
           <Button
             onClick={onRefresh}
             disabled={loading}
             variant="outline"
             size="sm"
-            className="flex items-center space-x-2"
+            className={`flex items-center space-x-2 ${isMobile ? 'flex-1' : ''}`}
           >
             <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
             <span>Refresh</span>
           </Button>
           
-          <Button
+          <AddButton
             onClick={onAddProduct}
-            className="flex items-center space-x-2"
+            size={isMobile ? "md" : "md"}
+            icon={<Plus />}
+            className={isMobile ? 'flex-1' : ''}
           >
-            <Plus className="h-4 w-4" />
-            <span>Add Product</span>
-          </Button>
+            Add Product
+          </AddButton>
         </div>
       </div>
 
       {/* Category Filter Tabs */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <h3 className={`${isMobile ? 'text-base' : 'text-lg'} font-semibold text-gray-800`}>
+          <h3 className={`${isMobile ? 'text-base' : 'text-lg'} font-semibold`} style={{ color: 'var(--text-primary)' }}>
             Filter by Category
           </h3>
           {isMobile && (
-            <span className="text-sm text-gray-500">
+            <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>
               {filteredProducts?.length || 0} products
             </span>
           )}
@@ -235,20 +247,30 @@ const ProductHeader = ({
 
       {/* Category Summary */}
       {!isMobile && (
-        <div className="mt-6 pt-4 border-t border-gray-200">
+        <div className="mt-6 pt-4" style={{ borderTop: '1px solid var(--border-secondary)' }}>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
             {categoryStats.map((category) => (
               <div 
                 key={category.value}
-                className="bg-gray-50 rounded-lg p-3 text-center hover:bg-gray-100 transition-colors cursor-pointer"
+                className="rounded-lg p-3 text-center transition-colors cursor-pointer"
+                style={{ 
+                  backgroundColor: 'var(--bg-elevated)',
+                  border: '1px solid var(--border-primary)'
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.backgroundColor = 'var(--bg-hover)'
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.backgroundColor = 'var(--bg-elevated)'
+                }}
                 onClick={() => setSelectedCategory(category.value)}
               >
                 <div 
                   className="w-4 h-4 rounded-full mx-auto mb-2"
                   style={{ backgroundColor: getCategoryColor(category.value) }}
                 />
-                <div className="text-sm font-medium text-gray-700">{category.label}</div>
-                <div className="text-lg font-bold text-gray-900">{category.count}</div>
+                <div className="text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>{category.label}</div>
+                <div className="text-lg font-bold" style={{ color: 'var(--text-primary)' }}>{category.count}</div>
               </div>
             ))}
           </div>

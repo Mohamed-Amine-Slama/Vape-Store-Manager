@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
-import { Card, Button, Select, Badge } from './ui'
+import { Card, Button, CustomDropdown, Badge } from './ui'
 import { formatCurrency, formatDateTime } from '../lib/utils'
 import { Calendar, DollarSign, Package, Users, TrendingUp, Download, Filter, ChevronLeft, ChevronRight } from 'lucide-react'
 
@@ -288,62 +288,87 @@ export default function WorkerTransactionsAnalytics() {
 
         {/* Filters */}
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-6">
-          <Select
+          <CustomDropdown
             label="Worker"
             value={selectedWorker}
-            onChange={(e) => setSelectedWorker(e.target.value)}
+            onChange={setSelectedWorker}
             options={[
-              { value: '', label: 'All Workers' },
-              ...workers.map(worker => ({ value: worker.id, label: worker.name }))
+              { value: '', label: 'All Workers', icon: <Users />, description: 'Show all worker transactions' },
+              ...workers.map(worker => ({ 
+                value: worker.id, 
+                label: worker.name,
+                icon: <Users />,
+                description: `Transactions for ${worker.name}`
+              }))
             ]}
+            placeholder="Select worker..."
+            icon={<Users />}
+            searchable={true}
+            clearable={true}
           />
-          <Select
+          <CustomDropdown
             label="Store"
             value={selectedStore}
-            onChange={(e) => setSelectedStore(e.target.value)}
+            onChange={setSelectedStore}
             options={[
-              { value: '', label: 'All Stores' },
-              ...stores.map(store => ({ value: store.id, label: store.name }))
+              { value: '', label: 'All Stores', icon: <Package />, description: 'Show all store transactions' },
+              ...stores.map(store => ({ 
+                value: store.id, 
+                label: store.name,
+                icon: <Package />,
+                description: `Transactions for ${store.name}`
+              }))
             ]}
+            placeholder="Select store..."
+            icon={<Package />}
+            searchable={true}
+            clearable={true}
           />
-          <Select
+          <CustomDropdown
             label="Type"
             value={selectedType}
-            onChange={(e) => setSelectedType(e.target.value)}
+            onChange={setSelectedType}
             options={[
-              { value: '', label: 'All Types' },
-              { value: 'salary_advance', label: 'Salary Advances' },
-              { value: 'product_consumption', label: 'Product Consumption' }
+              { value: '', label: 'All Types', icon: <Filter />, description: 'Show all transaction types' },
+              { value: 'salary_advance', label: '💰 Salary Advances', icon: <DollarSign />, description: 'Advance payments' },
+              { value: 'product_consumption', label: '🛍️ Product Consumption', icon: <Package />, description: 'Personal product usage' }
             ]}
+            placeholder="Select type..."
+            icon={<Filter />}
+            clearable={true}
           />
-          <Select
+          <CustomDropdown
             label="Month"
             value={selectedMonth}
-            onChange={(e) => setSelectedMonth(parseInt(e.target.value))}
+            onChange={(value) => setSelectedMonth(parseInt(value))}
             options={[
-              { value: 1, label: 'January' },
-              { value: 2, label: 'February' },
-              { value: 3, label: 'March' },
-              { value: 4, label: 'April' },
-              { value: 5, label: 'May' },
-              { value: 6, label: 'June' },
-              { value: 7, label: 'July' },
-              { value: 8, label: 'August' },
-              { value: 9, label: 'September' },
-              { value: 10, label: 'October' },
-              { value: 11, label: 'November' },
-              { value: 12, label: 'December' }
+              { value: 1, label: 'January', description: 'Jan' },
+              { value: 2, label: 'February', description: 'Feb' },
+              { value: 3, label: 'March', description: 'Mar' },
+              { value: 4, label: 'April', description: 'Apr' },
+              { value: 5, label: 'May', description: 'May' },
+              { value: 6, label: 'June', description: 'Jun' },
+              { value: 7, label: 'July', description: 'Jul' },
+              { value: 8, label: 'August', description: 'Aug' },
+              { value: 9, label: 'September', description: 'Sep' },
+              { value: 10, label: 'October', description: 'Oct' },
+              { value: 11, label: 'November', description: 'Nov' },
+              { value: 12, label: 'December', description: 'Dec' }
             ]}
+            placeholder="Select month..."
+            icon={<Calendar />}
           />
-          <Select
+          <CustomDropdown
             label="Year"
             value={selectedYear}
-            onChange={(e) => setSelectedYear(parseInt(e.target.value))}
+            onChange={(value) => setSelectedYear(parseInt(value))}
             options={[
-              { value: 2024, label: '2024' },
-              { value: 2025, label: '2025' },
-              { value: 2026, label: '2026' }
+              { value: 2024, label: '2024', description: 'Year 2024' },
+              { value: 2025, label: '2025', description: 'Year 2025' },
+              { value: 2026, label: '2026', description: 'Year 2026' }
             ]}
+            placeholder="Select year..."
+            icon={<Calendar />}
           />
         </div>
 

@@ -301,12 +301,12 @@ export default function Admin() {
                 </div>
               </div>
               <div>
-                <h1 className="admin-title">
+                <h1 className="admin-title" style={{ color: 'var(--text-primary)' }}>
                   Admin Dashboard
                 </h1>
                 <div className="flex items-center space-x-2 mt-1">
-                  <Crown className="h-3 w-3 text-amber-500" />
-                  <p className="text-sm text-gray-600 font-medium">
+                  <Crown className="h-3 w-3" style={{ color: 'var(--accent-warning)' }} />
+                  <p className="text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>
                     Welcome back, {user.name} • {user.selectedStoreName || 'All Stores'}
                   </p>
                 </div>
@@ -336,11 +336,23 @@ export default function Admin() {
                 {/* Notifications */}
                 <button
                   onClick={() => setShowNotifications(true)}
-                  className="relative p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="relative p-2 rounded-lg transition-colors focus:outline-none focus:ring-2"
+                  style={{
+                    color: 'var(--text-secondary)',
+                    backgroundColor: 'transparent'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.color = 'var(--text-primary)'
+                    e.target.style.backgroundColor = 'var(--bg-hover)'
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.color = 'var(--text-secondary)'
+                    e.target.style.backgroundColor = 'transparent'
+                  }}
                 >
                   <Bell className="h-5 w-5" />
                   {/* Notification badge - you can add unread count logic here */}
-                  <span className="absolute -top-1 -right-1 h-4 w-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
+                  <span className="absolute -top-1 -right-1 h-4 w-4 text-white text-xs rounded-full flex items-center justify-center" style={{ backgroundColor: 'var(--accent-cherry)' }}>
                     3
                   </span>
                 </button>
@@ -350,7 +362,20 @@ export default function Admin() {
                   onClick={logout}
                   variant="outline"
                   size="sm"
-                  className="admin-btn hover-lift focus-ring flex items-center space-x-1 lg:space-x-2 text-red-600 border-red-200 hover:bg-red-50 hover:border-red-300"
+                  className="admin-btn hover-lift focus-ring flex items-center space-x-1 lg:space-x-2"
+                  style={{
+                    color: 'var(--accent-cherry)',
+                    borderColor: 'var(--border-primary)',
+                    backgroundColor: 'transparent'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.backgroundColor = 'var(--bg-error)'
+                    e.target.style.borderColor = 'var(--accent-cherry)'
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.backgroundColor = 'transparent'
+                    e.target.style.borderColor = 'var(--border-primary)'
+                  }}
                 >
                   <LogOut className="h-3 w-3" />
                   <span className="hidden sm:inline text-sm">Sign Out</span>
@@ -395,25 +420,38 @@ export default function Admin() {
         <div className="fixed inset-0 z-50 overflow-y-auto">
           <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
             <div 
-              className="fixed inset-0 bg-gray-900/50 backdrop-blur-sm transition-opacity"
+              className="fixed inset-0 backdrop-blur-sm transition-opacity"
+              style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}
               onClick={() => setSelectedWorker(null)}
             />
-            <div className="relative transform overflow-hidden rounded-2xl bg-white shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-2xl border border-gray-200">
+            <div className="relative transform overflow-hidden rounded-2xl shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-2xl" style={{ backgroundColor: 'var(--bg-card)', border: '2px solid var(--border-primary)' }}>
               {/* Modal Header */}
-              <div className="bg-gradient-to-r from-blue-50 to-indigo-50 px-6 py-6 border-b border-gray-200">
+              <div className="px-6 py-6" style={{ backgroundColor: 'var(--bg-elevated)', borderBottom: '1px solid var(--border-secondary)' }}>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-4">
                     <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center text-white font-bold text-lg">
                       {selectedWorker.name.charAt(0).toUpperCase()}
                     </div>
                     <div>
-                      <h3 className="text-xl font-bold text-gray-900">{selectedWorker.name}</h3>
-                      <p className="text-sm text-gray-600">Worker Performance Overview</p>
+                      <h3 className="text-xl font-bold" style={{ color: 'var(--text-primary)' }}>{selectedWorker.name}</h3>
+                      <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>Worker Performance Overview</p>
                     </div>
                   </div>
                   <button
                     onClick={() => setSelectedWorker(null)}
-                    className="text-gray-400 hover:text-gray-600 p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                    className="p-2 rounded-lg transition-colors"
+                    style={{
+                      color: 'var(--text-muted)',
+                      backgroundColor: 'transparent'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.color = 'var(--text-primary)'
+                      e.target.style.backgroundColor = 'var(--bg-hover)'
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.color = 'var(--text-muted)'
+                      e.target.style.backgroundColor = 'transparent'
+                    }}
                   >
                     <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />

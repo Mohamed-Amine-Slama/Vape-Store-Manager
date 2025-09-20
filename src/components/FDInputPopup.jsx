@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import { createPortal } from 'react-dom'
-import { Button } from './ui'
-import { Coins, Calendar, AlertCircle, X, Sparkles, Clock, User, FileText } from 'lucide-react'
+import { Modal, Button, Input, AddButton } from './ui'
+import { Coins, Calendar, AlertCircle, Clock, User, FileText } from 'lucide-react'
 
 const FDInputPopup = ({ 
   isOpen, 
@@ -11,17 +10,29 @@ const FDInputPopup = ({
   storeName = '',
   shiftNumber = 2 
 }) => {
-  const [fdAmount, setFdAmount] = useState('')
-  const [notes, setNotes] = useState('')
+  const [fdForm, setFdForm] = useState({
+    amount: '',
+    notes: ''
+  })
   const [error, setError] = useState('')
-  const [isAnimating, setIsAnimating] = useState(false)
+  const isMobile = window.innerWidth <= 768
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
+  // Reset form when modal opens/closes
+  useEffect(() => {
+    if (isOpen) {
+      setFdForm({
+        amount: '',
+        notes: ''
+      })
+      setError('')
+    }
+  }, [isOpen])
+
+  const handleSubmit = (formData) => {
     setError('')
 
     // Validate FD amount
-    const amount = parseFloat(fdAmount)
+    const amount = parseFloat(formData.amount)
     if (isNaN(amount) || amount < 0) {
       setError('Please enter a valid FD amount (must be 0 or greater)')
       return
@@ -35,48 +46,20 @@ const FDInputPopup = ({
     // Submit the FD
     onSubmit({
       amount: amount,
-      notes: notes.trim() || null
+      notes: formData.notes.trim() || null
     })
   }
 
-  // Animation effects
-  useEffect(() => {
-    if (isOpen) {
-      setIsAnimating(true)
-      // Auto-focus on amount input when popup opens
-      setTimeout(() => {
-        const amountInput = document.getElementById('fdAmount')
-        if (amountInput) amountInput.focus()
-      }, 300)
-    } else {
-      setIsAnimating(false)
-    }
-  }, [isOpen])
-
   const handleClose = () => {
     if (!loading) {
-      setIsAnimating(false)
-      setTimeout(() => {
-        setFdAmount('')
-        setNotes('')
-        setError('')
-        onClose()
-      }, 200)
+      setFdForm({
+        amount: '',
+        notes: ''
+      })
+      setError('')
+      onClose()
     }
   }
-
-  // Prevent body scroll when modal is open - MUST be before any early returns
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden'
-    } else {
-      document.body.style.overflow = 'unset'
-    }
-    
-    return () => {
-      document.body.style.overflow = 'unset'
-    }
-  }, [isOpen])
 
   const tomorrowDate = new Date()
   tomorrowDate.setDate(tomorrowDate.getDate() + 1)
@@ -87,228 +70,240 @@ const FDInputPopup = ({
     day: 'numeric'
   })
 
-  if (!isOpen) return null
-
-  const modalContent = (
-    <div 
-      className="fixed inset-0 overflow-y-auto"
-      style={{ 
-        zIndex: 999999,
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0
-      }}
+  return (
+    <Modal
+      isOpen={isOpen}
+      onClose={handleClose}
+      title="Set Tomorrow's FD"
+      size="md"
     >
-      <div className="flex min-h-screen items-center justify-center p-4">
-        {/* Enhanced Backdrop with Strong Blur */}
-        <div 
-          className={`
-            fixed inset-0 bg-gradient-to-br from-slate-900/70 via-blue-900/30 to-indigo-900/50 
-            backdrop-blur-xl transition-all duration-500
-            ${isAnimating ? 'opacity-100' : 'opacity-0'}
-          `}
-          style={{
-            backdropFilter: 'blur(12px) saturate(180%)',
-            WebkitBackdropFilter: 'blur(12px) saturate(180%)'
-          }}
-          onClick={handleClose}
-        />
-        
-        {/* Worker Dashboard Style Modal */}
-        <div className={`
-          relative transform overflow-hidden bg-white shadow-2xl 
-          transition-all duration-500 ease-out w-full max-w-lg
-          rounded-2xl border border-gray-200
-          ${isAnimating 
-            ? 'opacity-100 scale-100 translate-y-0' 
-            : 'opacity-0 scale-95 translate-y-8'
-          }
-        `}
-        style={{ 
-          background: 'rgba(255, 255, 255, 0.95)',
-          backdropFilter: 'blur(10px)',
-          boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)'
+      <div style={{ 
+        padding: isMobile ? '0' : '1.5rem',
+        background: 'transparent'
+      }}>
+        <form onSubmit={(e) => {
+          e.preventDefault()
+          handleSubmit(fdForm)
+        }} className="space-y-4" style={{ 
+          display: 'flex', 
+          flexDirection: 'column', 
+          gap: isMobile ? '1.25rem' : '1rem' 
         }}>
-          {/* Animated Background Elements */}
-          <div className="absolute inset-0 bg-gradient-to-br from-green-500/5 via-emerald-500/5 to-teal-500/5"></div>
-          <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-green-400/10 to-emerald-600/10 rounded-full -translate-y-16 translate-x-16"></div>
-          <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-teal-400/10 to-green-600/10 rounded-full translate-y-12 -translate-x-12"></div>
-          
-          {/* Worker Dashboard Style Header */}
-          <div 
-            className="worker-card-header relative overflow-hidden"
-            style={{
-              background: 'linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%)',
-              borderBottom: '1px solid rgba(226, 232, 240, 0.8)'
-            }}
-          >
-            {/* Shimmer effect like worker cards */}
-            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-white/50 to-transparent animate-pulse"></div>
-            
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-3">
-                <div className="relative">
-                  <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center shadow-md">
-                    <Coins className="h-6 w-6 text-white" />
-                  </div>
-                  <div className="absolute -top-1 -right-1 w-4 h-4 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full animate-pulse"></div>
-                </div>
-                <div>
-                  <h3 className="text-lg sm:text-xl font-bold text-gray-900">
-                    Set Tomorrow's FD
-                  </h3>
-                  <p className="text-xs sm:text-sm text-gray-600 flex items-center space-x-1">
-                    <User className="h-3 w-3" />
-                    <span>Font de Caisse for {storeName}</span>
-                  </p>
-                </div>
+          {/* Header Info */}
+          <div style={{
+            padding: isMobile ? '1.25rem' : '1rem',
+            borderRadius: isMobile ? '0.875rem' : '0.5rem',
+            background: 'var(--bg-elevated)',
+            border: '1px solid var(--border-secondary)',
+            backdropFilter: isMobile ? 'blur(8px)' : 'none'
+          }}>
+            <div className="flex items-center space-x-3 mb-3">
+              <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: 'var(--accent-vapor)' }}>
+                <Calendar className="h-4 w-4 text-white" />
               </div>
-              {!loading && (
-                <button
-                  onClick={handleClose}
-                  className="worker-button p-2 bg-gray-100 hover:bg-gray-200 text-gray-500 hover:text-gray-700 rounded-lg transition-all duration-200"
-                  style={{ minHeight: '40px' }}
-                >
-                  <X className="h-5 w-5" />
-                </button>
-              )}
+              <span style={{ 
+                fontSize: isMobile ? '0.9rem' : '0.875rem',
+                fontWeight: '600',
+                color: 'var(--accent-vapor)'
+              }}>Setting FD for:</span>
+            </div>
+            <p style={{
+              fontSize: isMobile ? '1.125rem' : '1rem',
+              fontWeight: '700',
+              color: 'var(--text-primary)',
+              marginBottom: '0.5rem'
+            }}>{tomorrowFormatted}</p>
+            <div className="flex items-center space-x-2" style={{ 
+              color: 'var(--text-secondary)', 
+              fontSize: isMobile ? '0.85rem' : '0.8rem' 
+            }}>
+              <Clock className="h-4 w-4" />
+              <span>As Shift {shiftNumber} worker, you're responsible for setting tomorrow's cash fund</span>
             </div>
           </div>
 
-          {/* Worker Dashboard Style Content */}
-          <form onSubmit={handleSubmit} className="worker-card-content">
-            {/* Worker Dashboard Style Date Info */}
-            <div className="shift-card border-blue-200 bg-blue-50 mb-6">
-              <div className="flex items-center space-x-3 mb-3">
-                <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center">
-                  <Calendar className="h-4 w-4 text-white" />
-                </div>
-                <span className="text-sm font-semibold text-blue-700">Setting FD for:</span>
-              </div>
-              <p className="text-lg sm:text-xl font-bold text-blue-900 mb-2">{tomorrowFormatted}</p>
-              <div className="flex items-center space-x-2 text-blue-600 text-sm">
-                <Clock className="h-4 w-4" />
-                <span>As Shift {shiftNumber} worker, you're responsible for setting tomorrow's cash fund</span>
-              </div>
+          {/* FD Amount Input */}
+          <div>
+            <Input
+              label="FD Amount (TND)"
+              type="number"
+              step="0.001"
+              min="0"
+              max="10000"
+              value={fdForm.amount}
+              onChange={(e) => setFdForm({...fdForm, amount: e.target.value})}
+              placeholder="0.000"
+              required
+              disabled={loading}
+              style={{
+                fontFamily: 'monospace',
+                fontWeight: '600',
+                fontSize: isMobile ? '1rem' : '0.95rem'
+              }}
+            />
+            <div style={{
+              fontSize: '0.75rem',
+              color: 'var(--text-muted)',
+              marginTop: '0.5rem',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.5rem'
+            }}>
+              <div style={{
+                width: '6px',
+                height: '6px',
+                backgroundColor: 'var(--accent-success)',
+                borderRadius: '50%'
+              }}></div>
+              <span>Enter the cash fund amount that should be available tomorrow morning</span>
             </div>
+          </div>
 
-            {/* Worker Dashboard Style FD Amount Input */}
-            <div className="form-field mb-6">
-              <label htmlFor="fdAmount" className="flex items-center space-x-2 text-sm font-semibold text-gray-700 mb-2">
-                <Coins className="h-4 w-4 text-green-500" />
-                <span>FD Amount (TND) *</span>
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <span className="text-green-600 font-bold text-base">TND</span>
-                </div>
-                <input
-                  type="number"
-                  id="fdAmount"
-                  value={fdAmount}
-                  onChange={(e) => setFdAmount(e.target.value)}
-                  step="0.001"
-                  min="0"
-                  max="10000"
-                  placeholder="0.000"
-                  className="form-input pl-16 text-lg font-mono font-bold text-gray-900"
-                  required
-                  disabled={loading}
-                />
+          {/* Notes Input */}
+          <div>
+            <label style={{
+              display: 'block',
+              fontSize: isMobile ? '0.9rem' : '0.875rem',
+              fontWeight: '600',
+              color: 'var(--text-primary)',
+              marginBottom: '0.75rem'
+            }}>
+              Notes (Optional)
+            </label>
+            <textarea
+              value={fdForm.notes}
+              onChange={(e) => setFdForm({...fdForm, notes: e.target.value})}
+              rows={3}
+              placeholder="Any additional notes about the FD (e.g., special instructions, observations, etc.)..."
+              disabled={loading}
+              style={{
+                width: '100%',
+                padding: isMobile ? '1rem' : '0.75rem',
+                border: '2px solid var(--border-primary)',
+                borderRadius: isMobile ? '0.75rem' : '0.5rem',
+                fontSize: isMobile ? '1rem' : '0.95rem',
+                backgroundColor: 'var(--bg-card)',
+                color: 'var(--text-primary)',
+                transition: 'all 0.2s ease',
+                outline: 'none',
+                fontFamily: 'inherit',
+                resize: 'vertical',
+                minHeight: '80px'
+              }}
+              onFocus={(e) => {
+                e.target.style.borderColor = 'var(--accent-vapor)'
+                e.target.style.boxShadow = isMobile 
+                  ? '0 0 0 3px rgba(0, 212, 255, 0.2), 0 4px 8px -2px rgba(0, 0, 0, 0.3)' 
+                  : '0 0 0 3px rgba(0, 212, 255, 0.2), 0 0 20px rgba(0, 212, 255, 0.3)'
+              }}
+              onBlur={(e) => {
+                e.target.style.borderColor = 'var(--border-primary)'
+                e.target.style.boxShadow = isMobile 
+                  ? '0 2px 4px -1px rgba(0, 0, 0, 0.3)' 
+                  : '0 1px 3px 0 rgba(0, 0, 0, 0.4)'
+              }}
+            />
+          </div>
+
+          {/* Error Message */}
+          {error && (
+            <div style={{
+              padding: isMobile ? '1rem' : '0.75rem',
+              borderRadius: isMobile ? '0.75rem' : '0.5rem',
+              backgroundColor: 'var(--bg-error)',
+              border: '1px solid var(--accent-cherry)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.75rem'
+            }}>
+              <div style={{
+                width: '32px',
+                height: '32px',
+                backgroundColor: 'var(--accent-cherry)',
+                borderRadius: isMobile ? '0.5rem' : '0.375rem',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}>
+                <AlertCircle className="h-4 w-4 text-white" />
               </div>
-              <div className="text-xs text-gray-500 mt-2 flex items-center space-x-1">
-                <div className="w-1.5 h-1.5 bg-green-500 rounded-full"></div>
-                <span>Enter the cash fund amount that should be available tomorrow morning</span>
-              </div>
+              <span style={{
+                fontSize: isMobile ? '0.875rem' : '0.8rem',
+                fontWeight: '600',
+                color: 'var(--accent-cherry)'
+              }}>{error}</span>
             </div>
+          )}
 
-            {/* Worker Dashboard Style Notes Input */}
-            <div className="form-field mb-6">
-              <label htmlFor="notes" className="flex items-center space-x-2 text-sm font-semibold text-gray-700 mb-2">
-                <FileText className="h-4 w-4 text-purple-500" />
-                <span>Notes (Optional)</span>
-              </label>
-              <textarea
-                id="notes"
-                value={notes}
-                onChange={(e) => setNotes(e.target.value)}
-                rows={3}
-                placeholder="Any additional notes about the FD (e.g., special instructions, observations, etc.)..."
-                className="form-input resize-none text-gray-900"
-                disabled={loading}
-              />
-            </div>
+          {/* Action Buttons */}
+          <div style={{
+            display: 'flex',
+            gap: isMobile ? '0.75rem' : '0.75rem',
+            paddingTop: isMobile ? '1.5rem' : '1rem',
+            flexDirection: window.innerWidth <= 480 ? 'column' : 'row'
+          }}>
+            <AddButton 
+              type="submit" 
+              disabled={loading || !fdForm.amount} 
+              loading={loading}
+              className="flex-1"
+              style={{ flex: window.innerWidth <= 480 ? 'none' : 1 }}
+              icon={<Coins />}
+            >
+              Set FD
+            </AddButton>
+            <Button 
+              type="button" 
+              variant="outline" 
+              onClick={handleClose} 
+              className="flex-1"
+              style={{ flex: window.innerWidth <= 480 ? 'none' : 1 }}
+            >
+              Cancel
+            </Button>
+          </div>
 
-            {/* Worker Dashboard Style Error Message */}
-            {error && (
-              <div className="mb-6 shift-card border-red-200 bg-red-50">
-                <div className="flex items-center space-x-3">
-                  <div className="w-8 h-8 bg-red-500 rounded-lg flex items-center justify-center">
-                    <AlertCircle className="h-4 w-4 text-white" />
-                  </div>
-                  <span className="text-sm font-semibold text-red-700">{error}</span>
-                </div>
-              </div>
-            )}
-
-            {/* Worker Dashboard Style Action Buttons */}
-            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-              <button
-                type="button"
-                onClick={handleClose}
-                className="worker-button flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 hover:text-gray-900 border border-gray-300"
-                disabled={loading}
-              >
-                <div className="flex items-center justify-center space-x-2">
-                  <X className="h-4 w-4" />
-                  <span>Cancel</span>
-                </div>
-              </button>
-              <button
-                type="submit"
-                className="worker-button flex-1 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-semibold shadow-md hover:shadow-lg"
-                disabled={loading || !fdAmount}
-              >
-                {loading ? (
-                  <div className="flex items-center justify-center space-x-2">
-                    <div className="loading-spinner w-4 h-4 border-white"></div>
-                    <span>Setting FD...</span>
-                  </div>
-                ) : (
-                  <div className="flex items-center justify-center space-x-2">
-                    <Coins className="h-4 w-4" />
-                    <span>Set FD</span>
-                  </div>
-                )}
-              </button>
-            </div>
-          </form>
-
-          {/* Worker Dashboard Style Footer */}
-          <div 
-            className="worker-card-header border-t border-gray-200"
-            style={{
-              background: 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)',
-              borderTop: '1px solid rgba(226, 232, 240, 0.8)'
-            }}
-          >
-            <div className="flex items-center justify-center space-x-2">
-              <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
-              <span className="text-xs sm:text-sm text-gray-600 font-medium text-center">
+          {/* Info Footer */}
+          <div style={{
+            padding: isMobile ? '1rem' : '0.75rem',
+            borderRadius: isMobile ? '0.75rem' : '0.5rem',
+            background: 'var(--bg-elevated)',
+            border: '1px solid var(--border-secondary)',
+            textAlign: 'center'
+          }}>
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '0.5rem'
+            }}>
+              <div style={{
+                width: '8px',
+                height: '8px',
+                backgroundColor: 'var(--accent-vapor)',
+                borderRadius: '50%',
+                animation: 'pulse 2s infinite'
+              }}></div>
+              <span style={{
+                fontSize: isMobile ? '0.8rem' : '0.75rem',
+                color: 'var(--text-secondary)',
+                fontWeight: '500'
+              }}>
                 This FD will be visible to administrators and the morning shift worker
               </span>
-              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+              <div style={{
+                width: '8px',
+                height: '8px',
+                backgroundColor: 'var(--accent-success)',
+                borderRadius: '50%',
+                animation: 'pulse 2s infinite'
+              }}></div>
             </div>
           </div>
-        </div>
+        </form>
       </div>
-    </div>
+    </Modal>
   )
-
-  // Render modal using portal to ensure it appears above everything
-  return createPortal(modalContent, document.body)
 }
 
 export default FDInputPopup

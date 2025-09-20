@@ -105,19 +105,20 @@ export default function WorkerDetailsModal({ isOpen, onClose, worker }) {
     >
       <div 
         style={{
-          background: 'white',
+          background: 'var(--bg-card)',
           borderRadius: '16px',
           width: '100%',
           maxWidth: '600px',
           maxHeight: '90vh',
           overflow: 'hidden',
-          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)'
+          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
+          border: '2px solid var(--border-primary)'
         }}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
         <div style={{
-          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          background: 'linear-gradient(135deg, var(--accent-vapor) 0%, var(--accent-purple) 100%)',
           padding: '1.5rem',
           color: 'white',
           display: 'flex',
@@ -140,7 +141,14 @@ export default function WorkerDetailsModal({ isOpen, onClose, worker }) {
               borderRadius: '8px',
               color: 'white',
               padding: '0.5rem',
-              cursor: 'pointer'
+              cursor: 'pointer',
+              transition: 'all 0.2s ease'
+            }}
+            onMouseEnter={(e) => {
+              e.target.style.background = 'rgba(255, 255, 255, 0.2)'
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.background = 'rgba(255, 255, 255, 0.1)'
             }}
           >
             <X size={20} />
@@ -151,15 +159,15 @@ export default function WorkerDetailsModal({ isOpen, onClose, worker }) {
         <div style={{ padding: '1.5rem', maxHeight: '70vh', overflowY: 'auto' }}>
           {loadingDetails ? (
             <div style={{ textAlign: 'center', padding: '2rem' }}>
-              <p>Loading performance data...</p>
+              <p style={{ color: 'var(--text-primary)' }}>Loading performance data...</p>
             </div>
           ) : workerSalesDetails.length === 0 ? (
             <div style={{ textAlign: 'center', padding: '2rem' }}>
-              <User size={48} style={{ color: '#9ca3af', marginBottom: '1rem' }} />
-              <h3 style={{ fontSize: '1.25rem', margin: '0 0 0.5rem 0' }}>
+              <User size={48} style={{ color: 'var(--text-muted)', marginBottom: '1rem' }} />
+              <h3 style={{ fontSize: '1.25rem', margin: '0 0 0.5rem 0', color: 'var(--text-primary)' }}>
                 No Sales Today
               </h3>
-              <p style={{ color: '#6b7280', margin: 0 }}>
+              <p style={{ color: 'var(--text-secondary)', margin: 0 }}>
                 {worker.name} hasn't recorded any transactions today
               </p>
             </div>
@@ -167,33 +175,35 @@ export default function WorkerDetailsModal({ isOpen, onClose, worker }) {
             <div>
               {/* Summary */}
               <div style={{ marginBottom: '2rem' }}>
-                <h3 style={{ margin: '0 0 1rem 0' }}>Today's Summary</h3>
+                <h3 style={{ margin: '0 0 1rem 0', color: 'var(--text-primary)' }}>Today's Summary</h3>
                 <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
                   <div style={{ 
-                    background: '#f8fafc', 
+                    background: 'var(--bg-elevated)', 
                     padding: '1rem', 
                     borderRadius: '8px',
                     textAlign: 'center',
-                    minWidth: '120px'
+                    minWidth: '120px',
+                    border: '1px solid var(--border-primary)'
                   }}>
-                    <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#3b82f6' }}>
+                    <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'var(--accent-vapor)' }}>
                       {workerSalesDetails.length}
                     </div>
-                    <div style={{ fontSize: '0.875rem', color: '#6b7280' }}>
+                    <div style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
                       Transactions
                     </div>
                   </div>
                   <div style={{ 
-                    background: '#f0fdf4', 
+                    background: 'var(--bg-elevated)', 
                     padding: '1rem', 
                     borderRadius: '8px',
                     textAlign: 'center',
-                    minWidth: '120px'
+                    minWidth: '120px',
+                    border: '1px solid var(--border-primary)'
                   }}>
-                    <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#10b981' }}>
+                    <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'var(--accent-success)' }}>
                       {formatCurrency(workerSalesDetails.reduce((sum, sale) => sum + sale.total, 0))}
                     </div>
-                    <div style={{ fontSize: '0.875rem', color: '#6b7280' }}>
+                    <div style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
                       Revenue
                     </div>
                   </div>
@@ -202,32 +212,33 @@ export default function WorkerDetailsModal({ isOpen, onClose, worker }) {
               
               {/* Transaction List */}
               <div>
-                <h4 style={{ margin: '0 0 1rem 0' }}>Transaction History</h4>
+                <h4 style={{ margin: '0 0 1rem 0', color: 'var(--text-primary)' }}>Transaction History</h4>
                 <div style={{ maxHeight: '300px', overflowY: 'auto' }}>
                   {workerSalesDetails.map((sale, index) => (
                     <div 
                       key={sale.id} 
                       style={{ 
                         padding: '1rem',
-                        border: '1px solid #f3f4f6',
+                        border: '1px solid var(--border-secondary)',
                         borderRadius: '8px',
                         marginBottom: '0.5rem',
                         display: 'flex',
                         justifyContent: 'space-between',
-                        alignItems: 'center'
+                        alignItems: 'center',
+                        background: 'var(--bg-elevated)'
                       }}
                     >
                       <div>
-                        <div style={{ fontWeight: '600', marginBottom: '0.25rem' }}>
+                        <div style={{ fontWeight: '600', marginBottom: '0.25rem', color: 'var(--text-primary)' }}>
                           {sale.product}
                         </div>
-                        <div style={{ fontSize: '0.875rem', color: '#6b7280' }}>
+                        <div style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
                           {sale.time}
                           {sale.ml_amount && ` • ${sale.ml_amount}ml`}
                           {sale.quantity > 1 && ` • ×${sale.quantity}`}
                         </div>
                       </div>
-                      <div style={{ fontSize: '1.125rem', fontWeight: 'bold', color: '#10b981' }}>
+                      <div style={{ fontSize: '1.125rem', fontWeight: 'bold', color: 'var(--accent-success)' }}>
                         {formatCurrency(sale.price)}
                       </div>
                     </div>

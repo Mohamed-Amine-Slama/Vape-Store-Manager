@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Card, Modal, Button } from './ui'
+import { Card, Modal, Button, AddButton } from './ui'
 import { useProductCatalog, useProductStock } from '../hooks'
 import { 
   ProductHeader, 
@@ -170,9 +170,9 @@ export default function ProductCatalog() {
                 : `No products found in the ${categories.find(c => c.value === selectedCategory)?.label} category.`
               }
             </p>
-            <Button onClick={handleAddProduct} className="mt-2">
+            <AddButton onClick={handleAddProduct} className="mt-2">
               Add Your First Product
-            </Button>
+            </AddButton>
           </div>
         </Card>
       )}

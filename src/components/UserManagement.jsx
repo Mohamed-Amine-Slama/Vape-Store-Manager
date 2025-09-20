@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
-import { Card, Button, Input, Select, Modal, Badge } from './ui'
+import { Card, Button, Input, CustomDropdown, Modal, Badge, UserFormModal, AddButton } from './ui'
 import { 
   UserPlus, 
   Edit, 
@@ -26,12 +26,6 @@ export default function UserManagement() {
   const [searchTerm, setSearchTerm] = useState('')
   const [roleFilter, setRoleFilter] = useState('all')
   const [selectedUser, setSelectedUser] = useState(null)
-
-  const [userForm, setUserForm] = useState({
-    name: '',
-    pin: '',
-    role: 'worker'
-  })
 
   const [errors, setErrors] = useState({})
 
@@ -93,19 +87,29 @@ export default function UserManagement() {
     return Object.keys(newErrors).length === 0
   }
 
-  const handleSubmit = async (e) => {
-    e.preventDefault()
+  const handleSubmit = async (formData) => {
+    // Validate the form data
+    const newErrors = {}
     
-    if (!validateForm()) return
+    if (!formData.name?.trim()) {
+      newErrors.name = 'Name is required'
+    }
+    
+    if (!formData.pin || formData.pin.length < 4) {
+      newErrors.pin = 'PIN must be at least 4 digits'
+    }
+
+    setErrors(newErrors)
+    if (Object.keys(newErrors).length > 0) return
 
     setLoading(true)
     try {
       if (editingUser) {
         // Update existing user
         const updateData = {
-          name: userForm.name.trim(),
-          pin: userForm.pin,
-          role: userForm.role,
+          name: formData.name.trim(),
+          pin: formData.pin,
+          role: formData.role,
           store_id: null // All workers can work at any store
         }
 
@@ -120,9 +124,9 @@ export default function UserManagement() {
       } else {
         // Create new user
         const insertData = {
-          name: userForm.name.trim(),
-          pin: userForm.pin,
-          role: userForm.role,
+          name: formData.name.trim(),
+          pin: formData.pin,
+          role: formData.role,
           store_id: null // All workers can work at any store
         }
 
@@ -155,11 +159,6 @@ export default function UserManagement() {
 
   const handleEdit = (user) => {
     setEditingUser(user)
-    setUserForm({
-      name: user.name,
-      pin: user.pin,
-      role: user.role
-    })
     setErrors({})
     setIsModalOpen(true)
   }
@@ -186,13 +185,11 @@ export default function UserManagement() {
   const handleCloseModal = () => {
     setIsModalOpen(false)
     setEditingUser(null)
-    setUserForm({ name: '', pin: '', role: 'worker' })
     setErrors({})
   }
 
   const handleAddNew = () => {
     setEditingUser(null)
-    setUserForm({ name: '', pin: '', role: 'worker' })
     setErrors({})
     setIsModalOpen(true)
   }
@@ -260,13 +257,13 @@ export default function UserManagement() {
             </div>
           </div>
           
-          <Button
+          <AddButton
             onClick={handleAddNew}
-            className="flex items-center space-x-2 admin-btn hover-lift click-scale"
+            icon={<UserPlus />}
+            className="hover-lift click-scale"
           >
-            <UserPlus className="h-4 w-4" />
-            <span>Add Team Member</span>
-          </Button>
+            Add Team Member
+          </AddButton>
         </div>
       </div>
 
@@ -361,10 +358,9 @@ export default function UserManagement() {
               : 'Add your first team member to get started.'}
           </p>
           {!searchTerm && roleFilter === 'all' && (
-            <Button onClick={handleAddNew} className="admin-btn">
-              <UserPlus className="h-4 w-4 mr-2" />
+            <AddButton onClick={handleAddNew} icon={<UserPlus />}>
               Add Team Member
-            </Button>
+            </AddButton>
           )}
         </div>
       ) : (
@@ -704,136 +700,14 @@ export default function UserManagement() {
       )}
 
       {/* Add/Edit User Modal */}
-      <Modal
+      <UserFormModal
         isOpen={isModalOpen}
         onClose={handleCloseModal}
-        title={editingUser ? 'Edit Team Member' : 'Add New Team Member'}
-      >
-        <div style={{ 
-          padding: window.innerWidth <= 768 ? '0' : '1.5rem',
-          background: window.innerWidth <= 768 
-            ? 'transparent' 
-            : 'transparent'
-        }}>
-          <form onSubmit={handleSubmit} className="space-y-4" style={{ 
-            display: 'flex', 
-            flexDirection: 'column', 
-            gap: window.innerWidth <= 768 ? '1.25rem' : '1rem' 
-          }}>
-            <Input
-              label="Full Name"
-              value={userForm.name}
-              onChange={(e) => setUserForm({ ...userForm, name: e.target.value })}
-              error={errors.name}
-              placeholder="Enter full name"
-              required
-            />
-
-            <Input
-              label="PIN Code (4-6 digits)"
-              value={userForm.pin}
-              onChange={(e) => setUserForm({ ...userForm, pin: e.target.value.replace(/\D/g, '').slice(0, 6) })}
-              error={errors.pin}
-              placeholder="Enter 4-6 digit PIN"
-              required
-            />
-
-            <Select
-              label="Role"
-              value={userForm.role}
-              onChange={(e) => setUserForm({ ...userForm, role: e.target.value })}
-              options={[
-                { value: 'worker', label: 'Worker' },
-                { value: 'admin', label: 'Administrator' }
-              ]}
-            />
-
-            <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg" style={{
-              padding: window.innerWidth <= 768 ? '1rem' : '0.75rem',
-              borderRadius: window.innerWidth <= 768 ? '0.875rem' : '0.5rem',
-              backgroundColor: 'rgba(239, 246, 255, 0.8)',
-              border: '1px solid rgba(147, 197, 253, 0.3)',
-              backdropFilter: window.innerWidth <= 768 ? 'blur(8px)' : 'none'
-            }}>
-              <p className="text-sm text-blue-800" style={{
-                fontSize: window.innerWidth <= 768 ? '0.9rem' : '0.875rem',
-                lineHeight: 1.5,
-                color: '#1e40af',
-                fontWeight: '500'
-              }}>
-                ℹ️ {userForm.role === 'admin' 
-                  ? 'Administrators have access to all stores and the admin dashboard.' 
-                  : 'Workers can choose any store to work at during login using their PIN.'}
-              </p>
-            </div>
-
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4" style={{
-              padding: window.innerWidth <= 768 ? '1.25rem' : '1rem',
-              borderRadius: window.innerWidth <= 768 ? '0.875rem' : '0.5rem',
-              backgroundColor: 'rgba(239, 246, 255, 0.6)',
-              border: '1px solid rgba(147, 197, 253, 0.3)',
-              backdropFilter: window.innerWidth <= 768 ? 'blur(8px)' : 'none'
-            }}>
-              <h4 className="text-sm font-medium text-blue-900 mb-2" style={{
-                fontSize: window.innerWidth <= 768 ? '0.95rem' : '0.875rem',
-                fontWeight: '600',
-                color: '#1e3a8a',
-                marginBottom: window.innerWidth <= 768 ? '0.75rem' : '0.5rem'
-              }}>
-                Role Permissions
-              </h4>
-              <div className="text-xs text-blue-700 space-y-1" style={{
-                fontSize: window.innerWidth <= 768 ? '0.85rem' : '0.75rem',
-                color: '#1d4ed8',
-                lineHeight: 1.5
-              }}>
-                {userForm.role === 'admin' ? (
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.375rem' }}>
-                    <p>• Full access to admin dashboard</p>
-                    <p>• Can manage products and team members</p>
-                    <p>• Access to sales reports from all stores</p>
-                    <p>• Can export data and manage shifts</p>
-                    <p>• Can work at any store with admin privileges</p>
-                  </div>
-                ) : (
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.375rem' }}>
-                    <p>• Access to worker dashboard</p>
-                    <p>• Can record sales and manage shifts</p>
-                    <p>• Can choose any store to work at during login</p>
-                    <p>• View products catalog and process sales</p>
-                    <p>• Limited to sales and shift activities only</p>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            <div className="flex space-x-3 pt-4" style={{
-              display: 'flex',
-              gap: window.innerWidth <= 768 ? '0.75rem' : '0.75rem',
-              paddingTop: window.innerWidth <= 768 ? '1.5rem' : '1rem',
-              flexDirection: window.innerWidth <= 480 ? 'column' : 'row'
-            }}>
-              <Button 
-                type="submit" 
-                disabled={loading} 
-                className="flex-1 admin-btn"
-                style={{ flex: window.innerWidth <= 480 ? 'none' : 1 }}
-              >
-                {loading ? 'Saving...' : editingUser ? 'Update Member' : 'Add Member'}
-              </Button>
-              <Button 
-                type="button" 
-                variant="outline" 
-                onClick={handleCloseModal} 
-                className="flex-1"
-                style={{ flex: window.innerWidth <= 480 ? 'none' : 1 }}
-              >
-                Cancel
-              </Button>
-            </div>
-          </form>
-        </div>
-      </Modal>
+        onSubmit={handleSubmit}
+        editingUser={editingUser}
+        loading={loading}
+        errors={errors}
+      />
 
       {/* Delete Confirmation Modal */}
       <Modal

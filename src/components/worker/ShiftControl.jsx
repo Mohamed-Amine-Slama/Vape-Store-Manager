@@ -17,33 +17,51 @@ const ShiftControl = ({
   onRefreshData
 }) => {
   return (
-    <div className="worker-card">
+    <div 
+      className="rounded-xl overflow-hidden relative transition-all duration-300"
+      style={{
+        backgroundColor: 'var(--bg-card)',
+        boxShadow: 'var(--shadow-lg)',
+        border: '1px solid var(--border-primary)'
+      }}
+    >
+      {/* Top accent border */}
+      <div style={{ 
+        position: 'absolute', 
+        top: 0, 
+        left: 0, 
+        right: 0, 
+        height: '4px', 
+        background: 'linear-gradient(90deg, var(--accent-vapor), var(--accent-purple))' 
+      }}></div>
+      
       {/* Header Section */}
-      <div className="worker-card-header">
+      <div className="p-4" style={{ background: 'var(--bg-elevated)', borderBottom: '1px solid var(--border-secondary)' }}>
         <div className="flex items-center space-x-3">
-          <div className="p-2 bg-indigo-100 rounded-xl">
-            <Clock className="h-5 w-5 sm:h-6 sm:w-6 text-indigo-600" />
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg, var(--accent-vapor), var(--accent-purple))' }}>
+            <Clock className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
           </div>
           <div>
-            <h2 className="text-base sm:text-lg font-bold text-gray-900">Shift Control</h2>
-            <p className="text-xs sm:text-sm text-gray-600">Manage your work shifts</p>
+            <h2 className="text-base sm:text-lg font-bold" style={{ color: 'var(--text-primary)' }}>Shift Control</h2>
+            <p className="text-xs sm:text-sm" style={{ color: 'var(--text-secondary)' }}>Manage your work shifts</p>
           </div>
         </div>
       </div>
       
       {/* Content Section */}
-      <div className="worker-card-content">
+      <div className="p-4">
         {currentShift ? (
           <div className="space-y-3 sm:space-y-4">
             <div className="text-center">
               <Badge variant="success" className="worker-badge mb-2 sm:mb-3">
                 On Shift {currentShift.shift_number}
               </Badge>
-              <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-xl p-3 sm:p-4">
-                <div className="text-xl sm:text-2xl lg:text-3xl font-mono font-bold text-green-600">
+              <div className="rounded-xl p-3 sm:p-4 relative overflow-hidden" style={{ backgroundColor: 'var(--bg-success)', border: '1px solid var(--accent-success)' }}>
+                <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '3px', background: 'var(--accent-success)' }}></div>
+                <div className="text-xl sm:text-2xl lg:text-3xl font-mono font-bold" style={{ color: 'var(--accent-success)' }}>
                   {shiftTime}
                 </div>
-                <p className="text-xs sm:text-sm text-gray-500 mt-1">
+                <p className="text-xs sm:text-sm mt-1" style={{ color: 'var(--text-muted)' }}>
                   Started: {formatDateTime(currentShift.start_time)}
                 </p>
               </div>
@@ -51,38 +69,41 @@ const ShiftControl = ({
 
             {/* Shift Progress */}
             {shiftTargets && (
-              <div className="bg-white border border-gray-200 rounded-xl p-3 sm:p-4">
-                <h4 className="text-sm sm:text-base font-semibold text-gray-900 mb-2 sm:mb-3">Shift Progress</h4>
+              <div className="rounded-xl p-3 sm:p-4 relative overflow-hidden" style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-primary)', boxShadow: 'var(--shadow-sm)' }}>
+                <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '3px', background: 'linear-gradient(90deg, var(--accent-warning), #FBBF24)' }}></div>
+                <h4 className="text-sm sm:text-base font-semibold mb-2 sm:mb-3" style={{ color: 'var(--text-primary)' }}>Shift Progress</h4>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                   <div className="text-center">
-                    <div className="text-lg sm:text-xl font-bold text-blue-600">
+                    <div className="text-lg sm:text-xl font-bold" style={{ color: 'var(--accent-vapor)' }}>
                       {formatCurrency(shiftTotal)}
                     </div>
-                    <div className="text-xs sm:text-sm text-gray-500">Revenue</div>
-                    <div className="text-xs text-gray-400">
+                    <div className="text-xs sm:text-sm" style={{ color: 'var(--text-secondary)' }}>Revenue</div>
+                    <div className="text-xs" style={{ color: 'var(--text-muted)' }}>
                       Target: {formatCurrency(shiftTargets.revenue_target)}
                     </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2 mt-1">
+                    <div className="w-full rounded-full h-2 mt-1" style={{ backgroundColor: 'var(--bg-elevated)' }}>
                       <div 
-                        className="bg-blue-600 h-2 rounded-full transition-all duration-300" 
+                        className="h-2 rounded-full transition-all duration-300" 
                         style={{
+                          backgroundColor: 'var(--accent-vapor)',
                           width: `${Math.min(100, (shiftTotal / shiftTargets.revenue_target) * 100)}%`
                         }}
                       ></div>
                     </div>
                   </div>
                   <div className="text-center">
-                    <div className="text-lg sm:text-xl font-bold text-purple-600">
+                    <div className="text-lg sm:text-xl font-bold" style={{ color: 'var(--accent-purple)' }}>
                       {sales.length}
                     </div>
-                    <div className="text-xs sm:text-sm text-gray-500">Sales</div>
-                    <div className="text-xs text-gray-400">
+                    <div className="text-xs sm:text-sm" style={{ color: 'var(--text-secondary)' }}>Sales</div>
+                    <div className="text-xs" style={{ color: 'var(--text-muted)' }}>
                       Target: {shiftTargets.sales_target}
                     </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2 mt-1">
+                    <div className="w-full rounded-full h-2 mt-1" style={{ backgroundColor: 'var(--bg-elevated)' }}>
                       <div 
-                        className="bg-purple-600 h-2 rounded-full transition-all duration-300" 
+                        className="h-2 rounded-full transition-all duration-300" 
                         style={{
+                          backgroundColor: 'var(--accent-purple)',
                           width: `${Math.min(100, (sales.length / shiftTargets.sales_target) * 100)}%`
                         }}
                       ></div>
@@ -115,26 +136,28 @@ const ShiftControl = ({
           <div className="text-center space-y-3 sm:space-y-4">
             <Badge variant="default" className="worker-badge">Off Shift</Badge>
             {workerCompletedToday ? (
-              <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-xl p-3 sm:p-4">
-                <div className="text-green-800 font-medium mb-2 text-sm sm:text-base">
+              <div className="rounded-xl p-3 sm:p-4 relative overflow-hidden" style={{ backgroundColor: 'var(--bg-success)', border: '1px solid var(--accent-success)' }}>
+                <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '3px', background: 'var(--accent-success)' }}></div>
+                <div className="font-medium mb-2 text-sm sm:text-base" style={{ color: 'var(--accent-success)' }}>
                   ✅ Shift Completed Today
                 </div>
-                <p className="text-green-700 text-xs sm:text-sm mb-3">
+                <p className="text-xs sm:text-sm mb-3" style={{ color: 'var(--accent-success)' }}>
                   You have successfully completed your shift for today. 
                   You cannot start another shift until tomorrow.
                 </p>
-                <div className="text-xs text-green-600">
+                <div className="text-xs" style={{ color: 'var(--accent-success)' }}>
                   Thank you for your hard work! 🙏
                 </div>
               </div>
             ) : shiftNumber !== null ? (
               <div className="space-y-3 sm:space-y-4">
-                <div className="bg-blue-50 border border-blue-200 rounded-xl p-3 sm:p-4">
-                  <Clock className="h-8 w-8 sm:h-10 sm:w-10 text-blue-500 mx-auto mb-2" />
-                  <p className="text-blue-700 text-sm sm:text-base font-medium">
+                <div className="rounded-xl p-3 sm:p-4 relative overflow-hidden" style={{ backgroundColor: 'rgba(0, 212, 255, 0.1)', border: '1px solid var(--accent-vapor)' }}>
+                  <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '3px', background: 'var(--accent-vapor)' }}></div>
+                  <Clock className="h-8 w-8 sm:h-10 sm:w-10 mx-auto mb-2" style={{ color: 'var(--accent-vapor)' }} />
+                  <p className="text-sm sm:text-base font-medium" style={{ color: 'var(--accent-vapor)' }}>
                     Ready to start Shift {shiftNumber}
                   </p>
-                  <p className="text-blue-600 text-xs sm:text-sm mt-1">
+                  <p className="text-xs sm:text-sm mt-1" style={{ color: 'var(--accent-vapor)' }}>
                     Begin recording sales and managing your shift
                   </p>
                 </div>
@@ -158,12 +181,13 @@ const ShiftControl = ({
               </div>
             ) : (
               <div className="space-y-3 sm:space-y-4">
-                <div className="bg-red-50 border border-red-200 rounded-xl p-3 sm:p-4">
-                  <Users className="h-8 w-8 sm:h-10 sm:w-10 text-red-500 mx-auto mb-2" />
-                  <p className="text-red-700 text-sm sm:text-base font-medium mb-2">
+                <div className="rounded-xl p-3 sm:p-4 relative overflow-hidden" style={{ backgroundColor: 'var(--bg-error)', border: '1px solid var(--accent-cherry)' }}>
+                  <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '3px', background: 'var(--accent-cherry)' }}></div>
+                  <Users className="h-8 w-8 sm:h-10 sm:w-10 mx-auto mb-2" style={{ color: 'var(--accent-cherry)' }} />
+                  <p className="text-sm sm:text-base font-medium mb-2" style={{ color: 'var(--accent-cherry)' }}>
                     All Shifts Occupied
                   </p>
-                  <p className="text-red-600 text-xs sm:text-sm">
+                  <p className="text-xs sm:text-sm" style={{ color: 'var(--accent-cherry)' }}>
                     Both shifts are already taken by other workers today
                   </p>
                 </div>

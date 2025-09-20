@@ -10,10 +10,11 @@
   align-items: center;
   margin-bottom: 32px;
   padding: 20px;
-  background: linear-gradient(135deg, #1E293B, #334155);
+  background: var(--bg-card);
   border-radius: 16px;
-  color: white;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  color: var(--text-primary);
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--border-primary);
 }
 
 .header-info h2 {
@@ -45,17 +46,17 @@
   align-items: center;
   gap: 6px;
   padding: 8px 12px;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-primary);
   border-radius: 8px;
-  color: white;
+  color: var(--text-primary);
   font-size: 14px;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .refresh-btn:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: var(--bg-hover);
 }
 
 .refresh-btn:disabled {
@@ -92,15 +93,15 @@
 }
 
 .live-indicator.active {
-  background: rgba(16, 185, 129, 0.2);
-  border: 1px solid rgba(16, 185, 129, 0.3);
-  color: #10B981;
+  background: var(--bg-success);
+  border: 1px solid var(--accent-success);
+  color: var(--accent-success);
 }
 
 .live-indicator.paused {
-  background: rgba(239, 68, 68, 0.2);
-  border: 1px solid rgba(239, 68, 68, 0.3);
-  color: #EF4444;
+  background: var(--bg-error);
+  border: 1px solid var(--accent-cherry);
+  color: var(--accent-cherry);
 }
 
 .indicator-dot {
@@ -180,11 +181,11 @@
 }
 
 .summary-card {
-  background: white;
+  background: var(--bg-card);
   border-radius: 16px;
   padding: 24px;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--border-primary);
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
@@ -201,19 +202,19 @@
 }
 
 .summary-card.revenue::before {
-  background: linear-gradient(90deg, #10B981, #34D399);
+  background: linear-gradient(90deg, var(--accent-success), #34D399);
 }
 
 .summary-card.sales::before {
-  background: linear-gradient(90deg, #3B82F6, #60A5FA);
+  background: linear-gradient(90deg, var(--accent-vapor), #60A5FA);
 }
 
 .summary-card.shifts::before {
-  background: linear-gradient(90deg, #8B5CF6, #A78BFA);
+  background: linear-gradient(90deg, var(--accent-purple), #A78BFA);
 }
 
 .summary-card.reports::before {
-  background: linear-gradient(90deg, #F59E0B, #FBBF24);
+  background: linear-gradient(90deg, var(--accent-warning), #FBBF24);
 }
 
 .summary-card:hover {
@@ -232,22 +233,22 @@
 }
 
 .summary-card.revenue .card-icon {
-  background: linear-gradient(135deg, #10B981, #34D399);
+  background: linear-gradient(135deg, var(--accent-success), #34D399);
   color: white;
 }
 
 .summary-card.sales .card-icon {
-  background: linear-gradient(135deg, #3B82F6, #60A5FA);
+  background: linear-gradient(135deg, var(--accent-vapor), #60A5FA);
   color: white;
 }
 
 .summary-card.shifts .card-icon {
-  background: linear-gradient(135deg, #8B5CF6, #A78BFA);
+  background: linear-gradient(135deg, var(--accent-purple), #A78BFA);
   color: white;
 }
 
 .summary-card.reports .card-icon {
-  background: linear-gradient(135deg, #F59E0B, #FBBF24);
+  background: linear-gradient(135deg, var(--accent-warning), #FBBF24);
   color: white;
 }
 
@@ -282,23 +283,23 @@
 }
 
 .store-card {
-  background: white;
+  background: var(--bg-card);
   border-radius: 16px;
   padding: 24px;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--border-primary);
   transition: all 0.3s ease;
   position: relative;
 }
 
 .store-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-2xl);
 }
 
 .store-card.completed {
-  border-color: #10B981;
-  background: linear-gradient(to bottom, white, #F0FDF4);
+  border-color: var(--accent-success);
+  background: linear-gradient(to bottom, var(--bg-card), var(--bg-success));
 }
 
 .store-header {
@@ -317,7 +318,7 @@
 .store-icon {
   width: 40px;
   height: 40px;
-  background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+  background: linear-gradient(135deg, var(--accent-vapor), var(--accent-purple));
   border-radius: 10px;
   display: flex;
   align-items: center;
@@ -348,21 +349,21 @@
 }
 
 .status-badge.active {
-  background: #FEF3C7;
-  color: #D97706;
-  border: 1px solid #FCD34D;
+  background: var(--bg-warning);
+  color: var(--accent-warning);
+  border: 1px solid var(--accent-warning);
 }
 
 .status-badge.completed {
-  background: #D1FAE5;
-  color: #065F46;
-  border: 1px solid #10B981;
+  background: var(--bg-success);
+  color: var(--accent-success);
+  border: 1px solid var(--accent-success);
 }
 
 .status-badge.inactive {
-  background: #F3F4F6;
-  color: #6B7280;
-  border: 1px solid #D1D5DB;
+  background: var(--bg-elevated);
+  color: var(--text-muted);
+  border: 1px solid var(--border-primary);
 }
 
 /* Store Stats */
@@ -372,7 +373,7 @@
   gap: 16px;
   margin-bottom: 24px;
   padding: 16px;
-  background: #F9FAFB;
+  background: var(--bg-elevated);
   border-radius: 12px;
 }
 
@@ -388,7 +389,7 @@
 }
 
 .stat.last-sale {
-  border-left: 2px solid #E5E7EB;
+  border-left: 2px solid var(--border-secondary);
   padding-left: 12px;
 }
 
@@ -418,9 +419,9 @@
 .shift-row {
   margin-bottom: 16px;
   padding: 16px;
-  background: #F9FAFB;
+  background: var(--bg-elevated);
   border-radius: 12px;
-  border: 1px solid #E5E7EB;
+  border: 1px solid var(--border-secondary);
 }
 
 .shift-row:last-child {
@@ -462,13 +463,13 @@
 }
 
 .shift-status.active {
-  background: #FEF3C7;
-  color: #D97706;
+  background: var(--bg-warning);
+  color: var(--accent-warning);
 }
 
 .shift-status.completed {
-  background: #D1FAE5;
-  color: #065F46;
+  background: var(--bg-success);
+  color: var(--accent-success);
 }
 
 .shift-times {
@@ -496,7 +497,7 @@
 /* Daily Summary */
 .daily-summary {
   padding: 16px;
-  background: linear-gradient(135deg, #10B981, #34D399);
+  background: linear-gradient(135deg, var(--accent-success), #34D399);
   border-radius: 12px;
   color: white;
 }

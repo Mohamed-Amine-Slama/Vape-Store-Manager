@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
-import { Button, Card, Input, Select, Badge } from './ui'
+import { Button, Card, Input, CustomDropdown, CategoryDropdown, Badge, AddButton } from './ui'
 import { formatCurrency, formatDateTime } from '../lib/utils'
 import { DollarSign, Package, Calendar, Plus, History, CreditCard, ShoppingBag } from 'lucide-react'
 import { fuzzySearch } from '../lib/fuzzySearch'
@@ -218,15 +218,25 @@ export default function WorkerTransactions({ user, storeInfo, products }) {
                 <p className="text-xs sm:text-sm text-gray-600">Salary advances and product consumption</p>
               </div>
             </div>
-            <Button
-              onClick={() => setShowForm(!showForm)}
-              variant={showForm ? "outline" : "default"}
-              className="worker-button flex items-center space-x-2 font-semibold transition-all duration-300"
-            >
-              <Plus className="h-4 w-4" />
-              <span className="hidden sm:inline">{showForm ? 'Cancel' : 'Add Transaction'}</span>
-              <span className="sm:hidden">{showForm ? 'Cancel' : 'Add'}</span>
-            </Button>
+            {showForm ? (
+              <Button
+                onClick={() => setShowForm(false)}
+                variant="outline"
+                className="worker-button flex items-center space-x-2 font-semibold transition-all duration-300"
+              >
+                <span className="hidden sm:inline">Cancel</span>
+                <span className="sm:hidden">Cancel</span>
+              </Button>
+            ) : (
+              <AddButton
+                onClick={() => setShowForm(true)}
+                icon={<Plus />}
+                className="worker-button font-semibold transition-all duration-300"
+              >
+                <span className="hidden sm:inline">Add Transaction</span>
+                <span className="sm:hidden">Add</span>
+              </AddButton>
+            )}
         </div>
 
           {/* Transaction Form */}
@@ -234,19 +244,29 @@ export default function WorkerTransactions({ user, storeInfo, products }) {
             <div className="border-t border-gray-200 pt-4 mt-4">
               <form onSubmit={handleSubmit} className="sale-form">
                 <div className="form-field">
-                  <Select
+                  <CustomDropdown
                     label="Transaction Type"
                     value={transactionType}
-                    onChange={(e) => {
-                      const newType = e.target.value
+                    onChange={(newType) => {
                       setTransactionType(newType)
                       resetForm(false) // Clear fields but keep the form open
                     }}
-                    className="form-input"
                     options={[
-                      { value: 'salary_advance', label: '💰 Salary Advance' },
-                      { value: 'product_consumption', label: '🛍️ Product Consumption' }
+                      { 
+                        value: 'salary_advance', 
+                        label: '💰 Salary Advance', 
+                        icon: <DollarSign />,
+                        description: 'Advance payment from salary'
+                      },
+                      { 
+                        value: 'product_consumption', 
+                        label: '🛍️ Product Consumption', 
+                        icon: <ShoppingBag />,
+                        description: 'Personal product usage'
+                      }
                     ]}
+                    placeholder="Select transaction type..."
+                    icon={<CreditCard />}
                   />
                 </div>
 
@@ -267,7 +287,7 @@ export default function WorkerTransactions({ user, storeInfo, products }) {
                 ) : (
                   <div className="form-grid">
                     <div className="form-field">
-                      <Select
+                      <CategoryDropdown
                         label="Category"
                         value={form.category}
                         onChange={(e) => {
@@ -283,7 +303,7 @@ export default function WorkerTransactions({ user, storeInfo, products }) {
                           setProductSearch('')
                           setFilteredProducts([])
                         }}
-                        className="form-input"
+                        placeholder="Select category"
                         options={[
                           { value: '', label: 'Select category' },
                           { value: 'fruities', label: '🍓 Fruities' },

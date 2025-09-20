@@ -39,28 +39,28 @@ export function Button({
         return {
           ...baseStyles,
           background: isMobile 
-            ? 'linear-gradient(135deg, #3b82f6 0%, #2563eb 50%, #1d4ed8 100%)' 
-            : 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
+            ? 'linear-gradient(135deg, #00d4ff 0%, #7c3aed 50%, #3b82f6 100%)' 
+            : 'linear-gradient(135deg, #00d4ff 0%, #7c3aed 100%)',
           color: 'white',
           boxShadow: isMobile 
-            ? '0 8px 16px -4px rgba(59, 130, 246, 0.4), 0 4px 8px -2px rgba(0, 0, 0, 0.1)' 
-            : '0 4px 6px -1px rgba(59, 130, 246, 0.3)',
+            ? '0 8px 16px -4px rgba(0, 212, 255, 0.4), 0 4px 8px -2px rgba(0, 0, 0, 0.3)' 
+            : '0 4px 6px -1px rgba(0, 212, 255, 0.3), 0 0 20px rgba(0, 212, 255, 0.2)',
           border: isMobile ? '1px solid rgba(255, 255, 255, 0.2)' : 'none'
         }
       case 'outline':
         return {
           ...baseStyles,
           background: isMobile 
-            ? 'rgba(255, 255, 255, 0.95)' 
-            : 'white',
-          color: '#374151',
+            ? 'rgba(30, 30, 46, 0.8)' 
+            : 'rgba(30, 30, 46, 0.6)',
+          color: '#f8fafc',
           border: isMobile 
-            ? '2px solid #e2e8f0' 
-            : '2px solid #d1d5db',
+            ? '2px solid #334155' 
+            : '2px solid #475569',
           boxShadow: isMobile 
-            ? '0 4px 8px -2px rgba(0, 0, 0, 0.1)' 
-            : 'none',
-          backdropFilter: isMobile ? 'blur(8px)' : 'none'
+            ? '0 4px 8px -2px rgba(0, 0, 0, 0.3)' 
+            : '0 2px 4px -1px rgba(0, 0, 0, 0.2)',
+          backdropFilter: isMobile ? 'blur(12px)' : 'blur(8px)'
         }
       case 'danger':
         return {
@@ -70,8 +70,8 @@ export function Button({
             : 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
           color: 'white',
           boxShadow: isMobile 
-            ? '0 8px 16px -4px rgba(239, 68, 68, 0.4), 0 4px 8px -2px rgba(0, 0, 0, 0.1)' 
-            : '0 4px 6px -1px rgba(239, 68, 68, 0.3)',
+            ? '0 8px 16px -4px rgba(239, 68, 68, 0.4), 0 4px 8px -2px rgba(0, 0, 0, 0.3)' 
+            : '0 4px 6px -1px rgba(239, 68, 68, 0.3), 0 0 20px rgba(239, 68, 68, 0.2)',
           border: isMobile ? '1px solid rgba(255, 255, 255, 0.2)' : 'none'
         }
       default:
@@ -88,11 +88,11 @@ export function Button({
         if (!disabled && !isMobile) {
           e.target.style.transform = 'translateY(-2px)'
           if (variant === 'primary') {
-            e.target.style.boxShadow = '0 8px 12px -2px rgba(59, 130, 246, 0.4)'
+            e.target.style.boxShadow = '0 8px 12px -2px rgba(0, 212, 255, 0.5), 0 0 30px rgba(0, 212, 255, 0.3)'
           } else if (variant === 'danger') {
-            e.target.style.boxShadow = '0 8px 12px -2px rgba(239, 68, 68, 0.4)'
+            e.target.style.boxShadow = '0 8px 12px -2px rgba(239, 68, 68, 0.5), 0 0 30px rgba(239, 68, 68, 0.3)'
           } else {
-            e.target.style.boxShadow = '0 6px 12px -2px rgba(0, 0, 0, 0.15)'
+            e.target.style.boxShadow = '0 6px 12px -2px rgba(0, 0, 0, 0.4)'
           }
         }
       }}
@@ -100,11 +100,11 @@ export function Button({
         if (!disabled && !isMobile) {
           e.target.style.transform = 'translateY(0)'
           if (variant === 'primary') {
-            e.target.style.boxShadow = '0 4px 6px -1px rgba(59, 130, 246, 0.3)'
+            e.target.style.boxShadow = '0 4px 6px -1px rgba(0, 212, 255, 0.3), 0 0 20px rgba(0, 212, 255, 0.2)'
           } else if (variant === 'danger') {
-            e.target.style.boxShadow = '0 4px 6px -1px rgba(239, 68, 68, 0.3)'
+            e.target.style.boxShadow = '0 4px 6px -1px rgba(239, 68, 68, 0.3), 0 0 20px rgba(239, 68, 68, 0.2)'
           } else {
-            e.target.style.boxShadow = 'none'
+            e.target.style.boxShadow = '0 2px 4px -1px rgba(0, 0, 0, 0.2)'
           }
         }
       }}
@@ -164,11 +164,11 @@ export function Input({
           marginBottom: '0.75rem', 
           display: 'block',
           background: isMobile 
-            ? 'linear-gradient(135deg, #374151 0%, #1f2937 100%)'
+            ? 'linear-gradient(135deg, var(--accent-vapor) 0%, var(--accent-purple) 100%)'
             : 'inherit',
           backgroundClip: isMobile ? 'text' : 'inherit',
           WebkitBackgroundClip: isMobile ? 'text' : 'inherit',
-          color: isMobile ? 'transparent' : '#374151'
+          color: isMobile ? 'transparent' : 'var(--text-primary)'
         }}>
           {label}
         </label>
@@ -183,31 +183,32 @@ export function Input({
           width: '100%', 
           padding: isMobile ? '1rem' : '0.75rem', 
           border: error 
-            ? '2px solid #ef4444' 
-            : '2px solid #e2e8f0', 
+            ? '2px solid var(--accent-cherry)' 
+            : '2px solid var(--border-primary)', 
           borderRadius: isMobile ? '0.75rem' : '0.5rem', 
           fontSize: isMobile ? '1rem' : '0.95rem', 
-          backgroundColor: 'white',
+          backgroundColor: 'var(--bg-elevated)',
+          color: 'var(--text-primary)',
           transition: 'all 0.2s ease',
           outline: 'none',
           fontFamily: 'inherit',
           boxShadow: isMobile 
-            ? '0 2px 4px -1px rgba(0, 0, 0, 0.06)' 
-            : 'none',
+            ? '0 2px 4px -1px rgba(0, 0, 0, 0.3)' 
+            : '0 1px 3px 0 rgba(0, 0, 0, 0.4)',
           WebkitAppearance: 'none',
           ...style 
         }}
         onFocus={(e) => {
-          e.target.style.borderColor = '#3b82f6'
+          e.target.style.borderColor = 'var(--accent-vapor)'
           e.target.style.boxShadow = isMobile 
-            ? '0 0 0 3px rgba(59, 130, 246, 0.1), 0 4px 8px -2px rgba(0, 0, 0, 0.1)' 
-            : '0 0 0 3px rgba(59, 130, 246, 0.1)'
+            ? '0 0 0 3px rgba(0, 212, 255, 0.2), 0 4px 8px -2px rgba(0, 0, 0, 0.3)' 
+            : '0 0 0 3px rgba(0, 212, 255, 0.2), 0 0 20px rgba(0, 212, 255, 0.3)'
         }}
         onBlur={(e) => {
-          e.target.style.borderColor = error ? '#ef4444' : '#e2e8f0'
+          e.target.style.borderColor = error ? 'var(--accent-cherry)' : 'var(--border-primary)'
           e.target.style.boxShadow = isMobile 
-            ? '0 2px 4px -1px rgba(0, 0, 0, 0.06)' 
-            : 'none'
+            ? '0 2px 4px -1px rgba(0, 0, 0, 0.3)' 
+            : '0 1px 3px 0 rgba(0, 0, 0, 0.4)'
         }}
         {...props}
       />
@@ -218,8 +219,8 @@ export function Input({
           alignItems: 'center',
           gap: '0.5rem',
           padding: isMobile ? '0.75rem' : '0.5rem',
-          backgroundColor: '#fef2f2',
-          border: '1px solid #fecaca',
+          backgroundColor: 'var(--bg-error)',
+          border: '1px solid var(--accent-cherry)',
           borderRadius: isMobile ? '0.75rem' : '0.5rem',
           animation: 'shake 0.3s ease-in-out'
         }}>
@@ -228,13 +229,13 @@ export function Input({
             height="16" 
             fill="none" 
             viewBox="0 0 24 24" 
-            stroke="#ef4444"
+            stroke="var(--accent-cherry)"
             strokeWidth={2}
           >
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
           </svg>
           <p className="input-error" style={{ 
-            color: '#dc2626', 
+            color: 'var(--accent-cherry)', 
             fontSize: isMobile ? '0.875rem' : '0.8rem', 
             margin: 0,
             fontWeight: '500'
@@ -621,11 +622,9 @@ export function Modal({ isOpen, onClose, title, children }) {
           className="shared-modal-content" 
           onClick={(e) => e.stopPropagation()}
           style={{
-            background: 'linear-gradient(145deg, #ffffff 0%, #f8fafc 100%)',
+            background: 'var(--bg-card)',
             borderRadius: isMobile ? '1.25rem' : '1.25rem',
-            boxShadow: isMobile 
-              ? '0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 10px 25px -5px rgba(0, 0, 0, 0.1)' 
-              : '0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 10px 25px -5px rgba(0, 0, 0, 0.1)',
+            boxShadow: 'var(--shadow-2xl)',
             maxWidth: isMobile ? 'calc(100vw - 2rem)' : '520px',
             minWidth: isMobile ? '280px' : '400px',
             width: '100%',
@@ -640,13 +639,27 @@ export function Modal({ isOpen, onClose, title, children }) {
             maxHeight: isMobile ? '90vh' : 'calc(100vh - 2rem)',
             display: 'flex',
             flexDirection: 'column',
-            border: '1px solid rgba(255, 255, 255, 0.2)',
+            border: '1px solid var(--border-primary)',
             animation: isMobile ? 'fadeInScaleMobile 0.3s ease-out' : 'fadeInScale 0.2s ease-out',
             transform: 'translateZ(0)',
             backfaceVisibility: 'hidden',
-            perspective: 1000
+            perspective: 1000,
+            overflow: 'hidden'
           }}
         >
+          {/* Top accent border */}
+          <div style={{ 
+            position: 'absolute', 
+            top: 0, 
+            left: 0, 
+            right: 0, 
+            height: '4px', 
+            background: 'linear-gradient(90deg, var(--accent-vapor), var(--accent-purple))',
+            borderTopLeftRadius: '1.25rem',
+            borderTopRightRadius: '1.25rem',
+            zIndex: 1
+          }}></div>
+          
           {/* Close button handle for mobile */}
           {isMobile && (
             <div style={{
@@ -661,7 +674,7 @@ export function Modal({ isOpen, onClose, title, children }) {
               <div style={{
                 width: '48px',
                 height: '4px',
-                backgroundColor: '#d1d5db',
+                backgroundColor: 'var(--border-secondary)',
                 borderRadius: '2px',
                 transition: 'background-color 0.2s ease'
               }} />
@@ -672,12 +685,12 @@ export function Modal({ isOpen, onClose, title, children }) {
             className="modal-header"
             style={{
               padding: isMobile ? '0.75rem 1.5rem 1rem' : '1.5rem 1.5rem 1rem',
-              borderBottom: '1px solid #e2e8f0',
+              borderBottom: '1px solid var(--border-secondary)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
             background: isMobile 
-              ? 'linear-gradient(145deg, #ffffff 0%, #f8fafc 100%)' 
+              ? 'var(--bg-elevated)' 
               : 'transparent',
             flexShrink: 0,
             minHeight: isMobile ? '70px' : 'auto',
@@ -705,11 +718,11 @@ export function Modal({ isOpen, onClose, title, children }) {
                   lineHeight: 1.3,
                   paddingRight: '1rem',
                   background: isMobile 
-                    ? 'linear-gradient(135deg, #1e293b 0%, #3730a3 100%)'
+                    ? 'linear-gradient(135deg, var(--accent-vapor) 0%, var(--accent-purple) 100%)'
                     : 'inherit',
                   backgroundClip: isMobile ? 'text' : 'inherit',
                   WebkitBackgroundClip: isMobile ? 'text' : 'inherit',
-                  color: isMobile ? 'transparent' : '#1e293b'
+                  color: isMobile ? 'transparent' : 'var(--text-primary)'
                 }}
               >
                 {title}
@@ -717,7 +730,7 @@ export function Modal({ isOpen, onClose, title, children }) {
               {isMobile && (
                 <div style={{
                   fontSize: '0.75rem',
-                  color: '#64748b',
+                  color: 'var(--text-secondary)',
                   marginTop: '0.25rem',
                   fontWeight: '500'
                 }}>
@@ -731,13 +744,13 @@ export function Modal({ isOpen, onClose, title, children }) {
               className="modal-close"
               style={{
                 background: isMobile 
-                  ? 'rgba(255, 255, 255, 0.9)' 
-                  : '#f1f5f9',
-                border: isMobile ? '1px solid rgba(255, 255, 255, 0.6)' : 'none',
+                  ? 'var(--bg-elevated)' 
+                  : 'var(--bg-elevated)',
+                border: isMobile ? '1px solid var(--border-primary)' : 'none',
                 borderRadius: isMobile ? '0.75rem' : '0.5rem',
                 padding: isMobile ? '0.625rem' : '0.5rem',
                 cursor: 'pointer',
-                color: '#64748b',
+                color: 'var(--text-secondary)',
                 width: isMobile ? '44px' : '40px',
                 height: isMobile ? '44px' : '40px',
                 display: 'flex',
@@ -755,14 +768,14 @@ export function Modal({ isOpen, onClose, title, children }) {
               }}
               onMouseEnter={(e) => {
                 e.target.style.background = isMobile 
-                  ? 'rgba(248, 250, 252, 0.95)' 
-                  : '#e2e8f0'
+                  ? 'var(--bg-hover)' 
+                  : 'var(--bg-hover)'
                 e.target.style.transform = 'scale(1.05)'
               }}
               onMouseLeave={(e) => {
                 e.target.style.background = isMobile 
-                  ? 'rgba(255, 255, 255, 0.9)' 
-                  : '#f1f5f9'
+                  ? 'var(--bg-elevated)' 
+                  : 'var(--bg-elevated)'
                 e.target.style.transform = 'scale(1)'
               }}
             >
@@ -785,7 +798,7 @@ export function Modal({ isOpen, onClose, title, children }) {
             overflowY: 'auto',
             WebkitOverflowScrolling: 'touch',
             background: isMobile 
-              ? 'linear-gradient(145deg, #ffffff 0%, #f9fafb 100%)' 
+              ? 'var(--bg-card)' 
               : 'transparent',
             position: 'relative',
             maxHeight: isMobile ? 'calc(100vh - 220px)' : 'none'
@@ -867,3 +880,6 @@ export function Badge({ children, variant = 'default', className }) {
 }
 
 export { default as CustomDropdown } from './CustomDropdown'
+export { CategoryDropdown } from './CategoryDropdown'
+export { default as UserFormModal } from './UserFormModal'
+export { default as AddButton } from './AddButton'

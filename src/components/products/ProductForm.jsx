@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Modal, Button, Input, Select } from '../ui'
+import { Modal, Button, Input, CategoryDropdown, AddButton } from '../ui'
 import { Package, Save, X, AlertCircle } from 'lucide-react'
 import './ProductForm.css'
 
@@ -113,18 +113,13 @@ const ProductForm = ({
           </div>
 
           {/* Category */}
-          <Select
+          <CategoryDropdown
             label="Category"
             value={formData.category}
             onChange={(e) => handleInputChange('category', e.target.value)}
             error={errors.category}
             options={categories}
             placeholder="Choose a product category"
-            required
-            disabled={loading}
-            style={{ 
-              width: '100%'
-            }}
           />
 
           {/* Category Preview */}
@@ -165,23 +160,16 @@ const ProductForm = ({
             >
               Cancel
             </Button>
-            <Button
+            <AddButton
               type="submit"
-              className="flex-1 flex items-center justify-center space-x-2"
+              className="flex-1"
               disabled={loading || !formData.name.trim()}
+              loading={loading}
+              icon={editingProduct ? <Save /> : <Package />}
+              variant={editingProduct ? "secondary" : "primary"}
             >
-              {loading ? (
-                <>
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                  <span>Saving...</span>
-                </>
-              ) : (
-                <>
-                  <Save className="h-4 w-4" />
-                  <span>{editingProduct ? 'Update Product' : 'Create Product'}</span>
-                </>
-              )}
-            </Button>
+              {editingProduct ? 'Update Product' : 'Create Product'}
+            </AddButton>
           </div>
         </form>
 

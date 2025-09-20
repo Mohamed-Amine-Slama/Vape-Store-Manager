@@ -1,15 +1,15 @@
 /* UserManagement Component Styles - Unique class names with um- prefix */
 .um-container {
-  background: white;
+  background: var(--bg-card);
   border-radius: 12px;
   padding: 24px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  border: 1px solid #e5e7eb;
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--border-primary);
   height: fit-content;
 }
 
 .um-container h3 {
-  color: #1f2937;
+  color: var(--text-primary);
   font-size: 18px;
   font-weight: 600;
   margin-bottom: 20px;
@@ -19,52 +19,52 @@
 }
 
 .um-header {
-  background: rgba(255, 255, 255, 0.8);
+  background: var(--bg-card-translucent);
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid var(--border-primary);
   border-radius: 16px;
   padding: 24px;
   margin-bottom: 24px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-2xl);
 }
 
 .um-stats-card {
-  background: rgba(255, 255, 255, 0.9);
+  background: var(--bg-card-translucent);
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid var(--border-primary);
   border-radius: 16px;
   padding: 20px;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-lg);
 }
 
 .um-stats-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--shadow-2xl);
 }
 
 .um-glass-card {
-  background: rgba(255, 255, 255, 0.9);
+  background: var(--bg-card-translucent);
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid var(--border-primary);
   border-radius: 16px;
   padding: 24px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-2xl);
 }
 
 .um-team-member-card {
-  background: rgba(255, 255, 255, 0.9);
+  background: var(--bg-card-translucent);
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid var(--border-primary);
   border-radius: 16px;
   padding: 20px;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-lg);
 }
 
 .um-team-member-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--shadow-2xl);
 }
 
 .um-controls {
@@ -83,7 +83,7 @@
 
 .um-control-group label {
   font-size: 12px;
-  color: #6b7280;
+  color: var(--text-secondary);
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -92,17 +92,19 @@
 .um-control-group select,
 .um-control-group input {
   padding: 8px 12px;
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--border-primary);
   border-radius: 6px;
   font-size: 14px;
   transition: border-color 0.2s;
+  background: var(--bg-elevated);
+  color: var(--text-primary);
 }
 
 .um-control-group select:focus,
 .um-control-group input:focus {
   outline: none;
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  border-color: var(--accent-vapor);
+  box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1);
 }
 
 .um-users-list {
@@ -118,15 +120,27 @@
   align-items: center;
   justify-content: space-between;
   padding: 16px;
-  background: #f9fafb;
-  border-radius: 8px;
-  border: 1px solid #e5e7eb;
+  background: var(--bg-card);
+  border-radius: 12px;
+  border: 1px solid var(--border-primary);
   transition: all 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+
+.um-user-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--accent-vapor), var(--accent-purple));
 }
 
 .um-user-item:hover {
-  background: #f3f4f6;
-  border-color: #d1d5db;
+  background: var(--bg-hover);
+  border-color: var(--border-secondary);
 }
 
 .um-user-info {
@@ -140,7 +154,7 @@
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--accent-vapor) 0%, var(--accent-purple) 100%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -157,12 +171,12 @@
 
 .um-user-name {
   font-weight: 600;
-  color: #1f2937;
+  color: var(--text-primary);
   font-size: 14px;
 }
 
 .um-user-email {
-  color: #6b7280;
+  color: var(--text-secondary);
   font-size: 12px;
 }
 
@@ -175,13 +189,13 @@
 }
 
 .um-user-role.admin {
-  background: #fee2e2;
-  color: #dc2626;
+  background: var(--bg-error);
+  color: var(--accent-cherry);
 }
 
 .um-user-role.worker {
-  background: #dbeafe;
-  color: #2563eb;
+  background: rgba(0, 212, 255, 0.1);
+  color: var(--accent-vapor);
 }
 
 .um-user-actions {
@@ -203,21 +217,21 @@
 }
 
 .um-action-btn.edit {
-  background: #fef3c7;
-  color: #d97706;
+  background: var(--bg-warning);
+  color: var(--accent-warning);
 }
 
 .um-action-btn.edit:hover {
-  background: #fde68a;
+  background: rgba(245, 158, 11, 0.2);
 }
 
 .um-action-btn.delete {
-  background: #fee2e2;
-  color: #dc2626;
+  background: var(--bg-error);
+  color: var(--accent-cherry);
 }
 
 .um-action-btn.delete:hover {
-  background: #fecaca;
+  background: rgba(239, 68, 68, 0.2);
 }
 
 .um-loading {
@@ -225,14 +239,14 @@
   align-items: center;
   justify-content: center;
   padding: 40px;
-  color: #6b7280;
+  color: var(--text-secondary);
   font-size: 14px;
 }
 
 .um-empty-state {
   text-align: center;
   padding: 40px 20px;
-  color: #6b7280;
+  color: var(--text-secondary);
 }
 
 .um-empty-state p {
@@ -245,8 +259,8 @@
   width: 100%;
   overflow-x: auto;
   border-radius: 12px;
-  background: white;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  background: var(--bg-card);
+  box-shadow: var(--shadow-sm);
 }
 
 .um-performance-table table {
@@ -259,23 +273,23 @@
 .um-performance-table td {
   padding: 12px 16px;
   text-align: left;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--border-secondary);
 }
 
 .um-performance-table th {
-  background: #f9fafb;
+  background: var(--bg-elevated);
   font-weight: 600;
-  color: #374151;
+  color: var(--text-primary);
   font-size: 14px;
 }
 
 .um-performance-table td {
-  color: #6b7280;
+  color: var(--text-secondary);
   font-size: 14px;
 }
 
 .um-performance-table tr:hover {
-  background: #f9fafb;
+  background: var(--bg-hover);
 }
 
 /* Mobile Performance Cards */
@@ -284,12 +298,24 @@
 }
 
 .um-performance-card {
-  background: white;
+  background: var(--bg-card);
   border-radius: 12px;
   padding: 16px;
   margin-bottom: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  border: 1px solid #e5e7eb;
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border-primary);
+  position: relative;
+  overflow: hidden;
+}
+
+.um-performance-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--accent-success), #34D399);
 }
 
 .um-performance-card-header {
@@ -298,12 +324,12 @@
   justify-content: space-between;
   margin-bottom: 12px;
   padding-bottom: 12px;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--border-secondary);
 }
 
 .um-performance-card-name {
   font-weight: 600;
-  color: #1f2937;
+  color: var(--text-primary);
   font-size: 16px;
 }
 
@@ -324,20 +350,20 @@
 .um-performance-stat {
   text-align: center;
   padding: 8px;
-  background: #f9fafb;
+  background: var(--bg-elevated);
   border-radius: 8px;
 }
 
 .um-performance-stat-value {
   font-size: 18px;
   font-weight: 700;
-  color: #1f2937;
+  color: var(--text-primary);
   margin-bottom: 4px;
 }
 
 .um-performance-stat-label {
   font-size: 12px;
-  color: #6b7280;
+  color: var(--text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
@@ -345,7 +371,7 @@
 .um-performance-card-details {
   margin-top: 12px;
   padding-top: 12px;
-  border-top: 1px solid #e5e7eb;
+  border-top: 1px solid var(--border-secondary);
 }
 
 .um-performance-detail {
@@ -361,13 +387,13 @@
 
 .um-performance-detail-label {
   font-size: 13px;
-  color: #6b7280;
+  color: var(--text-secondary);
   font-weight: 500;
 }
 
 .um-performance-detail-value {
   font-size: 13px;
-  color: #1f2937;
+  color: var(--text-primary);
   font-weight: 600;
 }
 

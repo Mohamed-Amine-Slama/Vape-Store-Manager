@@ -78,28 +78,45 @@ const CalendarView = ({
     return 'low'
   }
 
-  const performanceStyles = {
-    excellent: 'bg-green-100 border-green-300 text-green-800',
-    good: 'bg-blue-100 border-blue-300 text-blue-800',
-    average: 'bg-yellow-100 border-yellow-300 text-yellow-800',
-    low: 'bg-red-100 border-red-300 text-red-800'
+  const getPerformanceStyle = (level) => {
+    switch(level) {
+      case 'excellent':
+        return { backgroundColor: 'var(--bg-success)', borderColor: 'var(--accent-success)', color: 'var(--accent-success)' }
+      case 'good':
+        return { backgroundColor: 'rgba(0, 212, 255, 0.1)', borderColor: 'var(--accent-vapor)', color: 'var(--accent-vapor)' }
+      case 'average':
+        return { backgroundColor: 'var(--bg-warning)', borderColor: 'var(--accent-warning)', color: 'var(--accent-warning)' }
+      case 'low':
+        return { backgroundColor: 'var(--bg-error)', borderColor: 'var(--accent-cherry)', color: 'var(--accent-cherry)' }
+      default:
+        return {}
+    }
   }
 
   const weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 
   return (
-    <div className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
+    <div className="rounded-xl overflow-hidden relative" style={{ background: 'var(--bg-card)', boxShadow: 'var(--shadow-lg)', border: '1px solid var(--border-primary)', transition: 'all 0.3s ease' }}>
+      {/* Top accent border */}
+      <div style={{ 
+        position: 'absolute', 
+        top: 0, 
+        left: 0, 
+        right: 0, 
+        height: '4px', 
+        background: 'linear-gradient(90deg, var(--accent-vapor), #60A5FA)' 
+      }}></div>
       {/* Calendar Header */}
-      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-4 border-b border-gray-200">
+      <div className="p-4" style={{ background: 'var(--bg-elevated)', borderBottom: '1px solid var(--border-secondary)' }}>
         <div className="flex items-center space-x-2 mb-4">
-          <Calendar className="h-6 w-6 text-blue-600" />
-          <h3 className="text-xl font-bold text-blue-800">Sales Calendar</h3>
+          <Calendar className="h-6 w-6" style={{ color: 'var(--accent-vapor)' }} />
+          <h3 className="text-xl font-bold" style={{ color: 'var(--text-primary)' }}>Sales Calendar</h3>
         </div>
         
         {/* Week day headers */}
         <div className="calendar-header-grid text-sm">
           {weekDays.map(day => (
-            <div key={day} className="text-center font-semibold text-gray-600 py-2">
+            <div key={day} className="text-center font-semibold py-2" style={{ color: 'var(--text-secondary)' }}>
               {isMobile ? day.charAt(0) : day}
             </div>
           ))}
@@ -116,6 +133,9 @@ const CalendarView = ({
             const report = getReportForDate(date)
             const hasReportData = hasData(date)
             
+            const performanceLevel = report ? getPerformanceLevel(report.daily_total) : null
+            const performanceStyle = performanceLevel ? getPerformanceStyle(performanceLevel) : {}
+            
             return (
               <div
                 key={index}
@@ -127,18 +147,43 @@ const CalendarView = ({
                     onDateSelect(dateString)
                   }
                 }}
-                className={`
-                  calendar-cell p-2
-                  border rounded-lg cursor-pointer transition-all duration-200
-                  ${!isCurrentMonth ? 'bg-gray-50 text-gray-400' : 'bg-white'}
-                  ${isToday ? 'ring-2 ring-blue-400 bg-blue-50' : ''}
-                  ${isSelected ? 'ring-2 ring-purple-400 bg-purple-50' : ''}
-                  ${hasReportData ? 
-                    'hover:bg-blue-100 hover:border-blue-400 hover:shadow-lg hover:scale-105 border-gray-300 hover:ring-2 hover:ring-blue-200' : 
-                    'border-gray-200 cursor-not-allowed hover:bg-gray-100'
+                className="calendar-cell p-2 border rounded-lg cursor-pointer transition-all duration-200"
+                style={{
+                  backgroundColor: !isCurrentMonth 
+                    ? 'var(--bg-elevated)' 
+                    : isToday 
+                      ? 'rgba(0, 212, 255, 0.1)'
+                      : isSelected
+                        ? 'rgba(124, 58, 237, 0.1)'
+                        : performanceStyle.backgroundColor || 'var(--bg-card)',
+                  color: !isCurrentMonth 
+                    ? 'var(--text-muted)' 
+                    : performanceStyle.color || 'var(--text-primary)',
+                  borderColor: isToday 
+                    ? 'var(--accent-vapor)'
+                    : isSelected
+                      ? 'var(--accent-purple)'
+                      : performanceStyle.borderColor || 'var(--border-primary)',
+                  borderWidth: isToday || isSelected ? '2px' : '1px',
+                  cursor: hasReportData ? 'pointer' : 'not-allowed',
+                  boxShadow: hasReportData ? 'var(--shadow-sm)' : 'none'
+                }}
+                onMouseEnter={(e) => {
+                  if (hasReportData) {
+                    e.target.style.backgroundColor = 'rgba(0, 212, 255, 0.2)'
+                    e.target.style.borderColor = 'var(--accent-vapor)'
+                    e.target.style.boxShadow = 'var(--shadow-lg)'
+                    e.target.style.transform = 'scale(1.05)'
                   }
-                  ${report ? performanceStyles[getPerformanceLevel(report.daily_total)] : ''}
-                `}
+                }}
+                onMouseLeave={(e) => {
+                  if (hasReportData) {
+                    e.target.style.backgroundColor = performanceStyle.backgroundColor || 'var(--bg-card)'
+                    e.target.style.borderColor = performanceStyle.borderColor || 'var(--border-primary)'
+                    e.target.style.boxShadow = 'var(--shadow-sm)'
+                    e.target.style.transform = 'scale(1)'
+                  }
+                }}
               >
                 <div className="h-full flex flex-col justify-center items-center min-h-[60px]">
                   {/* Date number */}
@@ -158,7 +203,7 @@ const CalendarView = ({
                           <span>{(report.shift1_transaction_count || 0) + (report.shift2_transaction_count || 0)}</span>
                         </span>
                         {report.daily_total >= 1000 && (
-                          <TrendingUp className="h-3 w-3 text-green-600" />
+                          <TrendingUp className="h-3 w-3" style={{ color: 'var(--accent-success)' }} />
                         )}
                       </div>
                     </div>
@@ -174,7 +219,7 @@ const CalendarView = ({
                   {/* No data indicator */}
                   {!hasReportData && isCurrentMonth && (
                     <div className="flex-1 flex items-center justify-center">
-                      <div className="w-1 h-1 rounded-full bg-gray-300"></div>
+                      <div className="w-1 h-1 rounded-full" style={{ backgroundColor: 'var(--text-muted)' }}></div>
                     </div>
                   )}
                 </div>
@@ -185,32 +230,32 @@ const CalendarView = ({
       </div>
 
       {/* Legend */}
-      <div className={`bg-gray-50 border-t border-gray-200 ${isMobile ? 'p-3' : 'p-4'}`}>
+      <div className={`${isMobile ? 'p-3' : 'p-4'}`} style={{ backgroundColor: 'var(--bg-elevated)', borderTop: '1px solid var(--border-secondary)' }}>
         <div className="flex items-center justify-between mb-2">
-          <h4 className="text-sm font-semibold text-gray-700">Performance Legend:</h4>
+          <h4 className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>Performance Legend:</h4>
         </div>
         <div className={`grid ${isMobile ? 'grid-cols-2 gap-2' : 'grid-cols-4 gap-4'} ${isMobile ? 'text-xs' : 'text-xs'}`}>
           <div className="flex items-center space-x-2">
-            <div className="w-3 h-3 rounded bg-green-100 border border-green-300 flex-shrink-0"></div>
-            <span className="text-gray-600">{isMobile ? 'Excellent' : 'Excellent (≥1000 TND)'}</span>
+            <div className="w-3 h-3 rounded flex-shrink-0" style={{ backgroundColor: 'var(--bg-success)', border: '1px solid var(--accent-success)' }}></div>
+            <span style={{ color: 'var(--text-secondary)' }}>{isMobile ? 'Excellent' : 'Excellent (≥1000 TND)'}</span>
           </div>
           <div className="flex items-center space-x-2">
-            <div className="w-3 h-3 rounded bg-blue-100 border border-blue-300 flex-shrink-0"></div>
-            <span className="text-gray-600">{isMobile ? 'Good' : 'Good (≥500 TND)'}</span>
+            <div className="w-3 h-3 rounded flex-shrink-0" style={{ backgroundColor: 'rgba(0, 212, 255, 0.1)', border: '1px solid var(--accent-vapor)' }}></div>
+            <span style={{ color: 'var(--text-secondary)' }}>{isMobile ? 'Good' : 'Good (≥500 TND)'}</span>
           </div>
           <div className="flex items-center space-x-2">
-            <div className="w-3 h-3 rounded bg-yellow-100 border border-yellow-300 flex-shrink-0"></div>
-            <span className="text-gray-600">{isMobile ? 'Average' : 'Average (≥100 TND)'}</span>
+            <div className="w-3 h-3 rounded flex-shrink-0" style={{ backgroundColor: 'var(--bg-warning)', border: '1px solid var(--accent-warning)' }}></div>
+            <span style={{ color: 'var(--text-secondary)' }}>{isMobile ? 'Average' : 'Average (≥100 TND)'}</span>
           </div>
           <div className="flex items-center space-x-2">
-            <div className="w-3 h-3 rounded bg-red-100 border border-red-300 flex-shrink-0"></div>
-            <span className="text-gray-600">{isMobile ? 'Low' : 'Low (<100 TND)'}</span>
+            <div className="w-3 h-3 rounded flex-shrink-0" style={{ backgroundColor: 'var(--bg-error)', border: '1px solid var(--accent-cherry)' }}></div>
+            <span style={{ color: 'var(--text-secondary)' }}>{isMobile ? 'Low' : 'Low (<100 TND)'}</span>
           </div>
         </div>
         
         {/* Additional info */}
-        <div className="mt-3 pt-3 border-t border-gray-200">
-          <div className={`${isMobile ? 'flex flex-col space-y-1' : 'flex items-center justify-between'} text-xs text-gray-500`}>
+        <div className="mt-3 pt-3" style={{ borderTop: '1px solid var(--border-secondary)' }}>
+          <div className={`${isMobile ? 'flex flex-col space-y-1' : 'flex items-center justify-between'} text-xs`} style={{ color: 'var(--text-muted)' }}>
             <span>{isMobile ? 'Tap highlighted dates for details' : 'Click on any highlighted date to view detailed breakdown'}</span>
             <span>{availableDates.length} days with data this month</span>
           </div>

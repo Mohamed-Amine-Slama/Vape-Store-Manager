@@ -107,24 +107,33 @@ const SimplifiedHistoricalReports = () => {
 
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-gray-50 to-stone-50">
+    <div className="min-h-screen" style={{ background: 'var(--bg-primary)' }}>
       <div className="max-w-7xl mx-auto px-6 lg:px-8 py-12">
         {/* Executive Header */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 mb-12 overflow-hidden">
-          <div className="px-8 py-10">
+        <div className="rounded-xl mb-8 overflow-hidden relative" style={{ background: 'var(--bg-card)', boxShadow: 'var(--shadow-lg)', border: '1px solid var(--border-primary)', transition: 'all 0.3s ease' }}>
+          {/* Top accent border */}
+          <div style={{ 
+            position: 'absolute', 
+            top: 0, 
+            left: 0, 
+            right: 0, 
+            height: '4px', 
+            background: 'linear-gradient(90deg, var(--accent-vapor), var(--accent-purple))' 
+          }}></div>
+          <div className="px-6 py-6">
             {/* Title Section */}
             <div className="flex flex-col xl:flex-row xl:items-center xl:justify-between mb-10">
               <div className="flex items-center space-x-5 mb-8 xl:mb-0">
                 <div className="flex-shrink-0">
-                  <div className="w-16 h-16 bg-slate-900 rounded-2xl flex items-center justify-center shadow-lg">
-                    <Calendar className="h-8 w-8 text-white" />
+                  <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg, var(--accent-vapor), var(--accent-purple))', boxShadow: 'var(--shadow-md)' }}>
+                    <Calendar className="h-6 w-6 text-white" />
                   </div>
                 </div>
                 <div>
-                  <h1 className="text-4xl xl:text-5xl font-light text-slate-900 tracking-tight">
+                  <h1 className="text-4xl xl:text-5xl font-light tracking-tight" style={{ color: 'var(--text-primary)' }}>
                     Historical Reports
                   </h1>
-                  <p className="text-slate-600 mt-2 text-lg font-light">
+                  <p className="mt-2 text-lg font-light" style={{ color: 'var(--text-secondary)' }}>
                     Executive sales analytics and performance insights
                   </p>
                 </div>
@@ -135,18 +144,39 @@ const SimplifiedHistoricalReports = () => {
                 <button
                   onClick={handleMonthlyExport}
                   disabled={loading}
-                  className="group relative inline-flex items-center px-8 py-3.5 bg-gradient-to-r from-emerald-600 to-emerald-700 text-white text-sm font-semibold rounded-2xl hover:from-emerald-700 hover:to-emerald-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                  className="group relative inline-flex items-center px-8 py-3.5 text-white text-sm font-semibold rounded-2xl focus:outline-none focus:ring-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 transform hover:-translate-y-0.5"
+                  style={{
+                    background: 'linear-gradient(135deg, var(--accent-success), #059669)',
+                    boxShadow: 'var(--shadow-lg)',
+                    focusRingColor: 'var(--accent-success)'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.boxShadow = 'var(--shadow-2xl)'
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.boxShadow = 'var(--shadow-lg)'
+                  }}
                 >
-                  <div className="absolute inset-0 bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                  <FileSpreadsheet className="relative h-5 w-5 mr-3" />
-                  <span className="relative hidden sm:inline">Export Monthly Report</span>
-                  <span className="relative sm:hidden">Export</span>
+                  <FileSpreadsheet className="h-5 w-5 mr-3" />
+                  <span className="hidden sm:inline">Export Monthly Report</span>
+                  <span className="sm:hidden">Export</span>
                 </button>
                 
                 <button
                   onClick={handleDataCleanup}
                   disabled={loading}
-                  className="group relative inline-flex items-center px-8 py-3.5 bg-gradient-to-r from-red-500 to-red-600 text-white text-sm font-semibold rounded-2xl hover:from-red-600 hover:to-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                  className="group relative inline-flex items-center px-8 py-3.5 text-white text-sm font-semibold rounded-2xl focus:outline-none focus:ring-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 transform hover:-translate-y-0.5"
+                  style={{
+                    background: 'linear-gradient(135deg, var(--accent-cherry), #b91c1c)',
+                    boxShadow: 'var(--shadow-lg)',
+                    focusRingColor: 'var(--accent-cherry)'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.boxShadow = 'var(--shadow-2xl)'
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.boxShadow = 'var(--shadow-lg)'
+                  }}
                 >
                   <div className="absolute inset-0 bg-gradient-to-r from-red-400 to-red-500 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                   <Trash2 className="relative h-5 w-5 mr-3" />
@@ -157,27 +187,55 @@ const SimplifiedHistoricalReports = () => {
             </div>
 
             {/* Refined Month Navigation */}
-            <div className="flex items-center justify-between bg-slate-50 rounded-xl p-6">
+            <div className="flex items-center justify-between rounded-xl p-4 mt-6" style={{ backgroundColor: 'var(--bg-elevated)', border: '1px solid var(--border-secondary)' }}>
               <button
                 onClick={() => navigateMonth(-1)}
-                className="inline-flex items-center px-5 py-2.5 bg-white text-slate-700 text-sm font-medium rounded-lg border border-slate-200 hover:bg-slate-50 hover:border-slate-300 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2 transition-all duration-200 shadow-sm hover:shadow-md"
+                className="inline-flex items-center px-5 py-2.5 text-sm font-medium rounded-lg focus:outline-none focus:ring-2 transition-all duration-200"
+                style={{
+                  backgroundColor: 'var(--bg-card)',
+                  color: 'var(--text-primary)',
+                  border: '1px solid var(--border-primary)',
+                  boxShadow: 'var(--shadow-sm)'
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.backgroundColor = 'var(--bg-hover)'
+                  e.target.style.boxShadow = 'var(--shadow-md)'
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.backgroundColor = 'var(--bg-card)'
+                  e.target.style.boxShadow = 'var(--shadow-sm)'
+                }}
               >
                 <ChevronLeft className="h-4 w-4 mr-2" />
                 Previous Month
               </button>
               
               <div className="text-center">
-                <h2 className="text-2xl xl:text-3xl font-light text-slate-900 tracking-tight">
+                <h2 className="text-2xl xl:text-3xl font-light tracking-tight" style={{ color: 'var(--text-primary)' }}>
                   {currentDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
                 </h2>
-                <p className="text-sm text-slate-500 mt-1 font-medium">
+                <p className="text-sm mt-1 font-medium" style={{ color: 'var(--text-secondary)' }}>
                   {availableDates.length} reporting days available
                 </p>
               </div>
               
               <button
                 onClick={() => navigateMonth(1)}
-                className="inline-flex items-center px-5 py-2.5 bg-white text-slate-700 text-sm font-medium rounded-lg border border-slate-200 hover:bg-slate-50 hover:border-slate-300 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2 transition-all duration-200 shadow-sm hover:shadow-md"
+                className="inline-flex items-center px-5 py-2.5 text-sm font-medium rounded-lg focus:outline-none focus:ring-2 transition-all duration-200"
+                style={{
+                  backgroundColor: 'var(--bg-card)',
+                  color: 'var(--text-primary)',
+                  border: '1px solid var(--border-primary)',
+                  boxShadow: 'var(--shadow-sm)'
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.backgroundColor = 'var(--bg-hover)'
+                  e.target.style.boxShadow = 'var(--shadow-md)'
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.backgroundColor = 'var(--bg-card)'
+                  e.target.style.boxShadow = 'var(--shadow-sm)'
+                }}
               >
                 Next Month
                 <ChevronRight className="h-4 w-4 ml-2" />
@@ -187,13 +245,22 @@ const SimplifiedHistoricalReports = () => {
         </div>
 
         {/* Executive Calendar Container */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        <div className="rounded-xl overflow-hidden relative" style={{ backgroundColor: 'var(--bg-card)', boxShadow: 'var(--shadow-lg)', border: '1px solid var(--border-primary)', transition: 'all 0.3s ease' }}>
+          {/* Top accent border */}
+          <div style={{ 
+            position: 'absolute', 
+            top: 0, 
+            left: 0, 
+            right: 0, 
+            height: '4px', 
+            background: 'linear-gradient(90deg, var(--accent-success), #34D399)' 
+          }}></div>
           <div className="p-8">
             <div className="mb-6">
-              <h3 className="text-xl font-light text-slate-900 tracking-tight">
+              <h3 className="text-xl font-light tracking-tight" style={{ color: 'var(--text-primary)' }}>
                 Monthly Overview
               </h3>
-              <p className="text-slate-600 text-sm font-light mt-1">
+              <p className="text-sm font-light mt-1" style={{ color: 'var(--text-secondary)' }}>
                 Select any date to view detailed performance metrics
               </p>
             </div>

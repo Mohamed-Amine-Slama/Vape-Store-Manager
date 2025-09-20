@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { supabase } from '../lib/supabase'
-import { Button, Card, Input, Select, Badge } from './ui'
+import { Button, Card, Input, CustomDropdown, Badge } from './ui'
 import { Package, Store, RefreshCw, Check, AlertTriangle } from 'lucide-react'
 import { fuzzySearch } from '../lib/fuzzySearch'
 
@@ -184,14 +184,15 @@ export default function InventoryManager() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="border rounded-lg p-4 bg-white">
               <div className="text-sm font-medium text-gray-700 mb-2">Adjustment Type</div>
-              <Select
-                label=""
+              <CustomDropdown
                 value={movementType}
-                onChange={(e) => setMovementType(e.target.value)}
+                onChange={(value) => setMovementType(value)}
                 options={[
-                  { value: 'restock', label: 'Restock' },
-                  { value: 'manual_adjustment', label: 'Manual Adjustment' }
+                  { value: 'restock', label: '📦 Restock', icon: <Package />, description: 'Add new inventory' },
+                  { value: 'manual_adjustment', label: '⚙️ Manual Adjustment', icon: <RefreshCw />, description: 'Correct inventory counts' }
                 ]}
+                placeholder="Select adjustment type..."
+                icon={<Store />}
               />
               <div className="text-xs text-gray-500 mt-2">Apply deltas below per store, then click Apply Updates.</div>
             </div>

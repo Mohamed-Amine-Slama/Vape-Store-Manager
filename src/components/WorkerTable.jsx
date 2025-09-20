@@ -96,15 +96,15 @@ export default function WorkerTable({ onWorkerClick }) {
 
   if (loading) {
     return (
-      <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
+      <div className="rounded-2xl shadow-lg p-6" style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-primary)' }}>
         <div className="animate-pulse">
           <div className="flex items-center space-x-3 mb-6">
-            <div className="w-6 h-6 bg-gray-200 rounded"></div>
-            <div className="h-6 w-48 bg-gray-200 rounded"></div>
+            <div className="w-6 h-6 rounded" style={{ backgroundColor: 'var(--bg-elevated)' }}></div>
+            <div className="h-6 w-48 rounded" style={{ backgroundColor: 'var(--bg-elevated)' }}></div>
           </div>
           <div className="space-y-4">
             {[1, 2, 3].map(i => (
-              <div key={i} className="h-16 bg-gray-200 rounded-xl"></div>
+              <div key={i} className="h-16 rounded-xl" style={{ backgroundColor: 'var(--bg-elevated)' }}></div>
             ))}
           </div>
         </div>

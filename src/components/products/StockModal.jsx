@@ -62,9 +62,18 @@ const StockModal = ({
 
   return (
     <Modal isOpen={open} onClose={onClose} size="lg">
-      <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-hidden">
+      <div className="rounded-2xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-hidden relative" style={{ backgroundColor: 'var(--bg-card)', boxShadow: 'var(--shadow-2xl)', border: '2px solid var(--border-primary)' }}>
+        {/* Top accent border */}
+        <div style={{ 
+          position: 'absolute', 
+          top: 0, 
+          left: 0, 
+          right: 0, 
+          height: '4px', 
+          background: 'linear-gradient(90deg, var(--accent-vapor), var(--accent-purple))' 
+        }}></div>
         {/* Header */}
-        <div className="bg-gradient-to-r from-blue-500 to-purple-600 p-6">
+        <div className="p-6" style={{ background: 'linear-gradient(135deg, var(--accent-vapor), var(--accent-purple))' }}>
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <div className="p-2 bg-white bg-opacity-20 rounded-xl">
@@ -103,20 +112,25 @@ const StockModal = ({
         <div className="p-6 overflow-y-auto max-h-[calc(90vh-120px)]">
           {loading ? (
             <div className="flex flex-col items-center justify-center py-12">
-              <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-500 border-t-transparent mb-4"></div>
-              <p className="text-gray-600 font-medium">Loading stock information...</p>
+              <div className="animate-spin rounded-full h-12 w-12 border-4 border-t-transparent mb-4" style={{ borderColor: 'var(--border-primary)', borderTopColor: 'var(--accent-vapor)' }}></div>
+              <p className="font-medium" style={{ color: 'var(--text-secondary)' }}>Loading stock information...</p>
             </div>
           ) : error ? (
-            <div className="bg-red-50 border border-red-200 rounded-lg p-6">
+            <div className="rounded-xl p-6 relative overflow-hidden" style={{ backgroundColor: 'var(--bg-error)', border: '1px solid var(--accent-cherry)' }}>
+              <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '3px', background: 'var(--accent-cherry)' }}></div>
               <div className="flex items-center space-x-3 mb-3">
-                <AlertCircle className="h-6 w-6 text-red-500" />
-                <h3 className="text-lg font-semibold text-red-800">Error Loading Stock</h3>
+                <AlertCircle className="h-6 w-6" style={{ color: 'var(--accent-cherry)' }} />
+                <h3 className="text-lg font-semibold" style={{ color: 'var(--accent-cherry)' }}>Error Loading Stock</h3>
               </div>
-              <p className="text-red-700 mb-4">{error}</p>
+              <p className="mb-4" style={{ color: 'var(--accent-cherry)' }}>{error}</p>
               <Button
                 onClick={onRefresh}
                 variant="outline"
-                className="text-red-600 border-red-300 hover:bg-red-50"
+                style={{ 
+                  color: 'var(--accent-cherry)', 
+                  borderColor: 'var(--accent-cherry)',
+                  backgroundColor: 'transparent'
+                }}
               >
                 <RefreshCw className="h-4 w-4 mr-2" />
                 Try Again
@@ -126,49 +140,50 @@ const StockModal = ({
             <div className="space-y-6">
               {/* Summary Cards */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-4 border border-blue-200">
-                  <div className="flex items-center space-x-3">
-                    <div className="p-2 bg-blue-500 rounded-lg">
+                <div className="rounded-xl p-4 relative overflow-hidden transition-all duration-300" style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-primary)', boxShadow: 'var(--shadow-sm)' }}>
+                  <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '3px', background: 'linear-gradient(90deg, var(--accent-vapor), #60A5FA)' }}></div>
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg, var(--accent-vapor), #60A5FA)' }}>
                       <Package className="h-5 w-5 text-white" />
                     </div>
-                    <div>
-                      <p className="text-sm font-medium text-blue-600">Total Stock</p>
-                      <p className="text-2xl font-bold text-blue-700">
-                        {getTotalStock().toFixed(product.category === 'fruities' || product.category === 'gourmands' ? 1 : 0)} {product.category === 'fruities' || product.category === 'gourmands' ? 'ml' : 'pcs'}
-                      </p>
-                    </div>
                   </div>
+                  <div className="text-2xl font-bold mb-1" style={{ color: 'var(--text-primary)' }}>
+                    {getTotalStock().toFixed(product.category === 'fruities' || product.category === 'gourmands' ? 1 : 0)} {product.category === 'fruities' || product.category === 'gourmands' ? 'ml' : 'pcs'}
+                  </div>
+                  <div className="text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>Total Stock</div>
                 </div>
 
-                <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-4 border border-green-200">
-                  <div className="flex items-center space-x-3">
-                    <div className="p-2 bg-green-500 rounded-lg">
+                <div className="rounded-xl p-4 relative overflow-hidden transition-all duration-300" style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-primary)', boxShadow: 'var(--shadow-sm)' }}>
+                  <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '3px', background: 'linear-gradient(90deg, var(--accent-success), #34D399)' }}></div>
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg, var(--accent-success), #34D399)' }}>
                       <BarChart3 className="h-5 w-5 text-white" />
                     </div>
-                    <div>
-                      <p className="text-sm font-medium text-green-600">Product Price</p>
-                      <p className="text-2xl font-bold text-green-700">{formatCurrency(product.price || 0)}</p>
-                    </div>
                   </div>
+                  <div className="text-2xl font-bold mb-1" style={{ color: 'var(--text-primary)' }}>
+                    {formatCurrency(product.price || 0)}
+                  </div>
+                  <div className="text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>Product Price</div>
                 </div>
 
-                <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-4 border border-purple-200">
-                  <div className="flex items-center space-x-3">
-                    <div className="p-2 bg-purple-500 rounded-lg">
+                <div className="rounded-xl p-4 relative overflow-hidden transition-all duration-300" style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-primary)', boxShadow: 'var(--shadow-sm)' }}>
+                  <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '3px', background: 'linear-gradient(90deg, var(--accent-purple), #A78BFA)' }}></div>
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg, var(--accent-purple), #A78BFA)' }}>
                       <Store className="h-5 w-5 text-white" />
                     </div>
-                    <div>
-                      <p className="text-sm font-medium text-purple-600">Stores</p>
-                      <p className="text-2xl font-bold text-purple-700">{inventory.length}</p>
-                    </div>
                   </div>
+                  <div className="text-2xl font-bold mb-1" style={{ color: 'var(--text-primary)' }}>
+                    {inventory.length}
+                  </div>
+                  <div className="text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>Stores</div>
                 </div>
               </div>
 
               {/* Stock by Store */}
               {inventory.length > 0 ? (
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Stock by Store</h3>
+                  <h3 className="text-lg font-semibold mb-4" style={{ color: 'var(--text-primary)' }}>Stock by Store</h3>
                   <div className="space-y-3">
                     {inventory.map((item, index) => {
                       const stockInfo = getStockInfo(item, product)
@@ -176,52 +191,57 @@ const StockModal = ({
                       const StatusIcon = statusInfo.icon
                       
                       return (
-                        <div key={index} className="bg-gray-50 rounded-xl p-4 border border-gray-200">
+                        <div key={index} className="rounded-xl p-4 relative overflow-hidden" style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-primary)', boxShadow: 'var(--shadow-sm)' }}>
+                          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '3px', background: 'linear-gradient(90deg, var(--accent-warning), #FBBF24)' }}></div>
                           <div className="flex justify-between items-start">
                             <div className="flex-1">
                               <div className="flex items-center space-x-2 mb-2">
-                                <Store className="h-4 w-4 text-gray-600" />
-                                <h4 className="font-semibold text-gray-900">
+                                <Store className="h-4 w-4" style={{ color: 'var(--text-secondary)' }} />
+                                <h4 className="font-semibold" style={{ color: 'var(--text-primary)' }}>
                                   {item.store_name || 'Unknown Store'}
                                 </h4>
                               </div>
                               
                               <div className="grid grid-cols-2 gap-4 mb-3">
                                 <div>
-                                  <p className="text-xs text-gray-500 mb-1">Current Stock</p>
-                                  <p className="text-lg font-bold text-gray-900">
+                                  <p className="text-xs mb-1" style={{ color: 'var(--text-muted)' }}>Current Stock</p>
+                                  <p className="text-lg font-bold" style={{ color: 'var(--text-primary)' }}>
                                     {stockInfo.display}
                                   </p>
                                 </div>
                                 <div>
-                                  <p className="text-xs text-gray-500 mb-1">Low Stock Threshold</p>
-                                  <p className="text-sm font-medium text-gray-600">
+                                  <p className="text-xs mb-1" style={{ color: 'var(--text-muted)' }}>Low Stock Threshold</p>
+                                  <p className="text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>
                                     {stockInfo.threshold > 0 ? `${stockInfo.threshold} ${stockInfo.unit}` : 'Not set'}
                                   </p>
                                 </div>
                               </div>
 
                               {product.category === 'fruities' || product.category === 'gourmands' ? (
-                                <div className="text-xs text-gray-500">
+                                <div className="text-xs" style={{ color: 'var(--text-muted)' }}>
                                   Liquid product - Stock measured in milliliters (ml)
                                 </div>
                               ) : (
-                                <div className="text-xs text-gray-500">
+                                <div className="text-xs" style={{ color: 'var(--text-muted)' }}>
                                   Solid product - Stock measured in pieces (pcs)
                                 </div>
                               )}
                             </div>
                             
                             <div className="text-right">
-                              <div className={`
-                                px-3 py-1 rounded-full text-xs font-semibold border flex items-center space-x-1
-                                ${statusInfo.bg} ${statusInfo.color}
-                              `}>
+                              <div 
+                                className="px-3 py-1 rounded-full text-xs font-semibold border flex items-center space-x-1"
+                                style={{
+                                  backgroundColor: stockInfo.value === 0 ? 'var(--bg-error)' : stockInfo.isLowStock ? 'var(--bg-warning)' : 'var(--bg-success)',
+                                  color: stockInfo.value === 0 ? 'var(--accent-cherry)' : stockInfo.isLowStock ? 'var(--accent-warning)' : 'var(--accent-success)',
+                                  borderColor: stockInfo.value === 0 ? 'var(--accent-cherry)' : stockInfo.isLowStock ? 'var(--accent-warning)' : 'var(--accent-success)'
+                                }}
+                              >
                                 <StatusIcon className="h-3 w-3" />
                                 <span>{statusInfo.status}</span>
                               </div>
                               {stockInfo.isLowStock && (
-                                <p className="text-xs text-orange-600 mt-1 font-medium">
+                                <p className="text-xs mt-1 font-medium" style={{ color: 'var(--accent-warning)' }}>
                                   ⚠️ Below threshold
                                 </p>
                               )}
@@ -234,12 +254,12 @@ const StockModal = ({
                 </div>
               ) : (
                 <div className="text-center py-12">
-                  <Package className="h-16 w-16 text-gray-300 mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">No Stock Information</h3>
-                  <p className="text-gray-600 mb-4">
+                  <Package className="h-16 w-16 mx-auto mb-4" style={{ color: 'var(--text-muted)' }} />
+                  <h3 className="text-lg font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>No Stock Information</h3>
+                  <p className="mb-4" style={{ color: 'var(--text-secondary)' }}>
                     This product doesn't have any stock records in our system yet.
                   </p>
-                  <p className="text-sm text-gray-500">
+                  <p className="text-sm" style={{ color: 'var(--text-muted)' }}>
                     Stock information will appear here once inventory is added through the inventory management system.
                   </p>
                 </div>
@@ -249,10 +269,10 @@ const StockModal = ({
         </div>
 
         {/* Footer */}
-        <div className="bg-gray-50 px-6 py-4 border-t border-gray-200 rounded-b-2xl">
+        <div className="px-6 py-4 rounded-b-2xl" style={{ backgroundColor: 'var(--bg-elevated)', borderTop: '1px solid var(--border-secondary)' }}>
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2 text-sm text-gray-600">
-              <AlertCircle className="h-4 w-4 text-blue-500" />
+            <div className="flex items-center space-x-2 text-sm" style={{ color: 'var(--text-secondary)' }}>
+              <AlertCircle className="h-4 w-4" style={{ color: 'var(--accent-vapor)' }} />
               <span>Stock levels are updated in real-time from inventory management</span>
             </div>
             <Button onClick={onClose} variant="outline">

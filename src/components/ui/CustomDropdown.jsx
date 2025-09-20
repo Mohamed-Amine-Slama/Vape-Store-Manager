@@ -6,14 +6,20 @@ const CustomDropdown = ({
   value, 
   onChange, 
   placeholder = "Select an option",
-  searchable = false,
+  searchable = true, // Changed default to true
   disabled = false,
   className = "",
   label = "",
   error = "",
   icon = null,
   clearable = false,
-  size = "md" // sm, md, lg
+  size = "md", // sm, md, lg
+  fuzzySearchEnabled = true,
+  searchKey = "label",
+  displayKey = "label",
+  valueKey = "value",
+  maxResults = 50,
+  noResultsText = "No options found"
 }) => {
   const [isOpen, setIsOpen] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
@@ -22,15 +28,43 @@ const CustomDropdown = ({
   const searchInputRef = useRef(null)
   const buttonRef = useRef(null)
 
+  // Fuzzy search function
+  const fuzzySearch = (text, searchTerm) => {
+    if (!searchTerm) return true
+    
+    const searchLower = searchTerm.toLowerCase()
+    const textLower = text.toLowerCase()
+    
+    // Direct match gets highest priority
+    if (textLower.includes(searchLower)) return true
+    
+    // Fuzzy matching - check if all characters of search term exist in order
+    let searchIndex = 0
+    for (let i = 0; i < textLower.length && searchIndex < searchLower.length; i++) {
+      if (textLower[i] === searchLower[searchIndex]) {
+        searchIndex++
+      }
+    }
+    return searchIndex === searchLower.length
+  }
+
   // Filter options based on search term
-  const filteredOptions = searchable 
-    ? options.filter(option => 
-        option.label.toLowerCase().includes(searchTerm.toLowerCase())
-      )
-    : options
+  const filteredOptions = searchable && searchTerm
+    ? options.filter(option => {
+        const searchText = option[searchKey] || option.label || ''
+        const description = option.description || ''
+        
+        if (fuzzySearchEnabled) {
+          return fuzzySearch(searchText, searchTerm) || fuzzySearch(description, searchTerm)
+        } else {
+          return searchText.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                 description.toLowerCase().includes(searchTerm.toLowerCase())
+        }
+      }).slice(0, maxResults)
+    : options.slice(0, maxResults)
 
   // Find selected option
-  const selectedOption = options.find(option => option.value === value)
+  const selectedOption = options.find(option => (option[valueKey] || option.value) === value)
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -63,7 +97,7 @@ const CustomDropdown = ({
   }
 
   const handleSelect = (option) => {
-    onChange(option.value)
+    onChange(option[valueKey] || option.value)
     setIsOpen(false)
     setSearchTerm('')
     setIsFocused(false)
@@ -93,7 +127,9 @@ const CustomDropdown = ({
     }
   }
 
-  // Size configurations
+  // Size configurations - Updated to match Input field dimensions
+  const isMobile = window.innerWidth <= 768
+  
   const sizeConfig = {
     sm: {
       button: 'px-3 py-2 text-sm min-h-[36px]',
@@ -103,7 +139,7 @@ const CustomDropdown = ({
       option: 'px-3 py-2'
     },
     md: {
-      button: 'px-4 py-3 text-base min-h-[44px]',
+      button: isMobile ? 'px-4 py-4 text-base min-h-[52px]' : 'px-3 py-3 text-[0.95rem] min-h-[44px]',
       icon: 'h-5 w-5',
       label: 'text-sm',
       dropdown: 'text-base',
@@ -123,7 +159,7 @@ const CustomDropdown = ({
   return (
     <div className={`relative ${className}`}>
       {label && (
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label className="block text-sm font-medium mb-2" style={{ color: 'var(--text-primary)' }}>
           {label}
         </label>
       )}
@@ -136,39 +172,45 @@ const CustomDropdown = ({
           onClick={handleToggle}
           onKeyDown={handleKeyDown}
           disabled={disabled}
+          style={{
+            background: disabled ? 'var(--bg-secondary)' : 'var(--bg-card)',
+            borderColor: error ? 'var(--accent-cherry)' : (isOpen || isFocused ? 'var(--accent-vapor)' : 'var(--border-primary)'),
+            color: disabled ? 'var(--text-disabled)' : 'var(--text-primary)',
+            boxShadow: isOpen || isFocused 
+              ? 'var(--shadow-glow), var(--shadow-lg)' 
+              : 'var(--shadow-md)',
+            borderRadius: isMobile ? '0.75rem' : '0.5rem'
+          }}
           className={`
-            group relative w-full bg-white border-2 rounded-2xl text-left cursor-pointer
-            focus:outline-none transition-all duration-300 ease-out
+            group relative w-full border-2 text-left cursor-pointer
+            focus:outline-none transition-all duration-300 ease-out backdrop-blur-sm
             ${currentSize.button}
             ${disabled 
-              ? 'bg-gray-50 text-gray-400 cursor-not-allowed border-gray-200 shadow-none' 
-              : `border-gray-200 hover:border-blue-300 text-gray-900 shadow-sm hover:shadow-md
-                 ${isOpen || isFocused 
-                   ? 'border-blue-500 shadow-lg ring-4 ring-blue-500/10' 
-                   : 'hover:bg-gray-50/50'
-                 }`
+              ? 'cursor-not-allowed opacity-50' 
+              : 'hover:scale-[1.02] active:scale-[0.98]'
             }
-            ${error ? 'border-red-300 hover:border-red-400 focus:border-red-500 focus:ring-red-500/10' : ''}
           `}
         >
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3 flex-1 min-w-0">
               {/* Custom Icon */}
               {icon && (
-                <div className={`flex-shrink-0 ${disabled ? 'text-gray-300' : 'text-gray-500 group-hover:text-blue-500'} transition-colors duration-200`}>
+                <div style={{ 
+                  color: disabled ? 'var(--text-disabled)' : 'var(--text-muted)'
+                }} className="flex-shrink-0 transition-colors duration-200 group-hover:text-[var(--accent-vapor)]">
                   {React.cloneElement(icon, { className: currentSize.icon })}
                 </div>
               )}
               
               {/* Selected Value or Placeholder */}
-              <span className={`block truncate font-medium transition-colors duration-200 ${
-                !selectedOption 
-                  ? 'text-gray-400' 
+              <span style={{
+                color: !selectedOption 
+                  ? 'var(--text-muted)' 
                   : disabled 
-                    ? 'text-gray-400' 
-                    : 'text-gray-900'
-              }`}>
-                {selectedOption ? selectedOption.label : placeholder}
+                    ? 'var(--text-disabled)' 
+                    : 'var(--text-primary)'
+              }} className="block truncate font-medium transition-colors duration-200">
+                {selectedOption ? (selectedOption[displayKey] || selectedOption.label) : placeholder}
               </span>
             </div>
             
@@ -178,9 +220,19 @@ const CustomDropdown = ({
                 <div
                   onClick={handleClear}
                   className={`
-                    p-1 rounded-full hover:bg-gray-100 text-gray-400 hover:text-gray-600
-                    transition-all duration-200 cursor-pointer ${currentSize.icon}
+                    p-1 rounded-full transition-all duration-200 cursor-pointer ${currentSize.icon}
                   `}
+                  style={{
+                    color: 'var(--text-muted)'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.backgroundColor = 'var(--bg-hover)'
+                    e.target.style.color = 'var(--text-primary)'
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.backgroundColor = 'transparent'
+                    e.target.style.color = 'var(--text-muted)'
+                  }}
                   role="button"
                   tabIndex={0}
                   onKeyDown={(e) => {
@@ -197,11 +249,16 @@ const CustomDropdown = ({
               {/* Chevron */}
               <ChevronDown 
                 className={`
-                  ${currentSize.icon} text-gray-400 group-hover:text-blue-500 
-                  transition-all duration-300 ease-out
-                  ${isOpen ? 'transform rotate-180 text-blue-500' : ''}
-                  ${disabled ? 'text-gray-300' : ''}
-                `} 
+                  ${currentSize.icon} transition-all duration-300 ease-out
+                  ${isOpen ? 'transform rotate-180' : ''}
+                `}
+                style={{
+                  color: disabled 
+                    ? 'var(--text-disabled)' 
+                    : isOpen 
+                      ? 'var(--accent-vapor)' 
+                      : 'var(--text-muted)'
+                }} 
               />
             </div>
           </div>
@@ -218,48 +275,71 @@ const CustomDropdown = ({
 
         {/* Dropdown Menu */}
         {isOpen && (
-          <div className={`
-            absolute z-50 w-full mt-2 bg-white border-2 border-gray-100 rounded-2xl 
-            shadow-2xl max-h-80 overflow-hidden backdrop-blur-sm
-            transition-all duration-300 ease-out
-            ${isOpen ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 scale-95 -translate-y-2'}
-          `}>
+          <div 
+            style={{
+              background: 'var(--bg-card)',
+              borderColor: 'var(--border-primary)',
+              boxShadow: 'var(--shadow-2xl)',
+              borderRadius: isMobile ? '0.75rem' : '0.5rem'
+            }}
+            className={`
+              absolute z-50 w-full mt-2 border-2 max-h-80 overflow-hidden backdrop-blur-sm
+              transition-all duration-300 ease-out
+              ${isOpen ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 scale-95 -translate-y-2'}
+            `}>
             {/* Search Input */}
             {searchable && (
-              <div className="p-4 border-b border-gray-100 bg-gradient-to-r from-gray-50/50 to-blue-50/30">
+              <div style={{ 
+                borderBottomColor: 'var(--border-primary)',
+                background: 'linear-gradient(135deg, rgba(0, 212, 255, 0.05) 0%, rgba(124, 58, 237, 0.05) 100%)'
+              }} className="p-4 border-b">
                 <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                  <Search style={{ color: 'var(--text-muted)' }} className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4" />
                   <input
                     ref={searchInputRef}
                     type="text"
                     value={searchTerm}
                     onChange={handleSearchChange}
                     placeholder="Search options..."
+                    style={{
+                      background: 'var(--bg-elevated)',
+                      borderColor: 'var(--border-primary)',
+                      color: 'var(--text-primary)',
+                      borderRadius: isMobile ? '0.75rem' : '0.5rem'
+                    }}
                     className={`
-                      w-full pl-10 pr-4 py-3 border-2 border-gray-200 rounded-xl 
-                      focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 
-                      transition-all duration-200 bg-white/80 backdrop-blur-sm
-                      placeholder:text-gray-400 ${currentSize.dropdown}
+                      w-full pl-10 pr-4 py-3 border-2 
+                      focus:outline-none transition-all duration-200 backdrop-blur-sm
+                      placeholder:text-[var(--text-muted)] ${currentSize.dropdown}
                     `}
+                    onFocus={(e) => {
+                      e.target.style.borderColor = 'var(--accent-vapor)'
+                      e.target.style.boxShadow = 'var(--shadow-glow)'
+                    }}
+                    onBlur={(e) => {
+                      e.target.style.borderColor = 'var(--border-primary)'
+                      e.target.style.boxShadow = 'none'
+                    }}
                   />
                 </div>
               </div>
             )}
 
             {/* Options List */}
-            <div className="max-h-64 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
+            <div className="max-h-64 overflow-y-auto scrollbar-thin scrollbar-track-transparent" style={{ scrollbarColor: 'var(--border-primary) transparent' }}>
               {filteredOptions.length === 0 ? (
                 <div className={`
-                  px-6 py-8 text-center text-gray-500 ${currentSize.dropdown}
-                `}>
-                  <div className="w-12 h-12 mx-auto mb-3 bg-gray-100 rounded-full flex items-center justify-center">
-                    <Search className="h-5 w-5 text-gray-400" />
+                  px-6 py-8 text-center ${currentSize.dropdown}
+                `}
+                style={{ color: 'var(--text-muted)' }}>
+                  <div className="w-12 h-12 mx-auto mb-3 rounded-full flex items-center justify-center" style={{ backgroundColor: 'var(--bg-elevated)' }}>
+                    <Search className="h-5 w-5" style={{ color: 'var(--text-muted)' }} />
                   </div>
                   <p className="font-medium">
-                    {searchTerm ? 'No options found' : 'No options available'}
+                    {searchTerm ? noResultsText : 'No options available'}
                   </p>
                   {searchTerm && (
-                    <p className="text-sm text-gray-400 mt-1">
+                    <p className="text-sm mt-1" style={{ color: 'var(--text-muted)' }}>
                       Try adjusting your search terms
                     </p>
                   )}
@@ -268,7 +348,7 @@ const CustomDropdown = ({
                 <div className="py-2">
                   {filteredOptions.map((option, index) => (
                     <button
-                      key={option.value}
+                      key={option[valueKey] || option.value}
                       type="button"
                       onClick={() => handleSelect(option)}
                       className={`
@@ -277,13 +357,19 @@ const CustomDropdown = ({
                         focus:outline-none focus:bg-gradient-to-r focus:from-blue-50 focus:to-indigo-50
                         flex items-center justify-between relative
                         ${currentSize.option}
-                        ${option.value === value 
-                          ? 'bg-gradient-to-r from-blue-50 to-indigo-50 text-blue-700 font-semibold' 
-                          : 'text-gray-900 hover:text-blue-700'
+                        ${(option[valueKey] || option.value) === value 
+                          ? 'font-semibold' 
+                          : ''
                         }
-                        ${index === 0 ? 'rounded-t-xl' : ''}
-                        ${index === filteredOptions.length - 1 ? 'rounded-b-xl' : ''}
                       `}
+                      style={{
+                        backgroundColor: (option[valueKey] || option.value) === value 
+                          ? 'var(--bg-elevated)' 
+                          : 'transparent',
+                        color: (option[valueKey] || option.value) === value 
+                          ? 'var(--accent-vapor)' 
+                          : 'var(--text-primary)'
+                      }}
                     >
                       {/* Option Content */}
                       <div className="flex items-center space-x-3 flex-1 min-w-0">
@@ -291,30 +377,34 @@ const CustomDropdown = ({
                         {option.icon && (
                           <div className={`
                             flex-shrink-0 transition-colors duration-200
-                            ${option.value === value ? 'text-blue-600' : 'text-gray-400 group-hover:text-blue-500'}
-                          `}>
+                          `}
+                          style={{
+                            color: (option[valueKey] || option.value) === value 
+                              ? 'var(--accent-vapor)' 
+                              : 'var(--text-muted)'
+                          }}>
                             {React.cloneElement(option.icon, { className: currentSize.icon })}
                           </div>
                         )}
                         
                         {/* Option Label */}
                         <span className="block truncate transition-colors duration-200">
-                          {option.label}
+                          {option[displayKey] || option.label}
                         </span>
                         
                         {/* Option Description */}
                         {option.description && (
-                          <span className="text-xs text-gray-400 truncate ml-2">
+                          <span className="text-xs truncate ml-2" style={{ color: 'var(--text-muted)' }}>
                             {option.description}
                           </span>
                         )}
                       </div>
                       
                       {/* Selected Indicator */}
-                      {option.value === value && (
+                      {(option[valueKey] || option.value) === value && (
                         <div className="flex-shrink-0 ml-3">
-                          <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center">
-                            <Check className="h-3 w-3 text-white" />
+                          <div className="w-6 h-6 rounded-full flex items-center justify-center" style={{ backgroundColor: 'var(--accent-vapor)' }}>
+                            <Check className="h-3 w-3" style={{ color: 'white' }} />
                           </div>
                         </div>
                       )}
@@ -335,9 +425,9 @@ const CustomDropdown = ({
 
       {/* Error Message */}
       {error && (
-        <div className="mt-2 flex items-center space-x-2 text-red-600">
-          <div className="w-4 h-4 rounded-full bg-red-100 flex items-center justify-center">
-            <X className="w-2 h-2 text-red-500" />
+        <div className="mt-2 flex items-center space-x-2" style={{ color: 'var(--accent-cherry)' }}>
+          <div className="w-4 h-4 rounded-full flex items-center justify-center" style={{ backgroundColor: 'var(--bg-elevated)' }}>
+            <X className="w-2 h-2" style={{ color: 'var(--accent-cherry)' }} />
           </div>
           <p className="text-sm font-medium">{error}</p>
         </div>

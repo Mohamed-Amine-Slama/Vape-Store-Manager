@@ -178,12 +178,28 @@ export default function SummaryCards() {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-7 gap-6">
         {[1, 2, 3, 4, 5, 6, 7].map(i => (
-          <div key={i} className="stats-card animate-pulse">
+          <div 
+            key={i} 
+            className="stats-card animate-pulse rounded-2xl p-6"
+            style={{
+              background: 'var(--bg-card)',
+              border: '1px solid var(--border-primary)'
+            }}
+          >
             <div className="flex items-center space-x-4">
-              <div className="w-16 h-16 bg-gray-200 rounded-2xl"></div>
+              <div 
+                className="w-16 h-16 rounded-2xl"
+                style={{ backgroundColor: 'var(--bg-elevated)' }}
+              ></div>
               <div className="flex-1">
-                <div className="h-4 bg-gray-200 rounded mb-2"></div>
-                <div className="h-6 bg-gray-200 rounded"></div>
+                <div 
+                  className="h-4 rounded mb-2"
+                  style={{ backgroundColor: 'var(--bg-elevated)' }}
+                ></div>
+                <div 
+                  className="h-6 rounded"
+                  style={{ backgroundColor: 'var(--bg-elevated)' }}
+                ></div>
               </div>
             </div>
           </div>
@@ -197,44 +213,78 @@ export default function SummaryCards() {
       {cards.map((card, index) => (
         <div 
           key={index} 
-          className={`
-            relative overflow-hidden bg-gradient-to-br ${card.bgGradient} 
-            border ${card.borderColor} rounded-2xl p-6 
-            shadow-lg hover:shadow-xl transition-all duration-300 
-            hover:scale-105 group cursor-pointer
-          `}
+          className="relative overflow-hidden rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 group cursor-pointer"
+          style={{
+            background: 'var(--bg-card)',
+            border: '1px solid var(--border-primary)',
+            boxShadow: 'var(--shadow-lg)'
+          }}
+          onMouseEnter={(e) => {
+            e.target.style.boxShadow = 'var(--shadow-2xl)'
+          }}
+          onMouseLeave={(e) => {
+            e.target.style.boxShadow = 'var(--shadow-lg)'
+          }}
         >
           {/* Background Pattern */}
-          <div className="absolute inset-0 bg-gradient-to-br from-white/50 to-transparent"></div>
-          <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-white/10 to-transparent rounded-full -mr-16 -mt-16"></div>
+          <div 
+            className="absolute inset-0"
+            style={{
+              background: 'linear-gradient(135deg, rgba(0, 212, 255, 0.05) 0%, transparent 100%)'
+            }}
+          ></div>
+          <div 
+            className="absolute top-0 right-0 w-32 h-32 rounded-full -mr-16 -mt-16"
+            style={{
+              background: 'linear-gradient(135deg, rgba(124, 58, 237, 0.1) 0%, transparent 100%)'
+            }}
+          ></div>
           
           <div className="relative">
             <div className="flex items-center justify-between mb-4">
-              <div className={`
-                w-16 h-16 rounded-2xl bg-gradient-to-br ${card.gradient} 
-                flex items-center justify-center shadow-lg
-                group-hover:scale-110 transition-transform duration-300
-              `}>
+              <div 
+                className="w-16 h-16 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300"
+                style={{
+                  background: `linear-gradient(135deg, ${card.gradient.includes('emerald') ? 'var(--accent-success)' : 
+                    card.gradient.includes('blue') ? 'var(--accent-vapor)' :
+                    card.gradient.includes('purple') ? 'var(--accent-purple)' :
+                    card.gradient.includes('indigo') ? 'var(--accent-vapor)' :
+                    card.gradient.includes('green') ? 'var(--accent-success)' :
+                    card.gradient.includes('orange') ? 'var(--accent-warning)' :
+                    'var(--accent-vapor)'} 0%, ${card.gradient.includes('emerald') ? '#059669' : 
+                    card.gradient.includes('blue') ? '#0ea5e9' :
+                    card.gradient.includes('purple') ? '#ec4899' :
+                    card.gradient.includes('indigo') ? 'var(--accent-purple)' :
+                    card.gradient.includes('green') ? '#059669' :
+                    card.gradient.includes('orange') ? '#ea580c' :
+                    'var(--accent-purple)'} 100%)`
+                }}
+              >
                 <card.icon className="h-6 w-6 text-white" />
               </div>
               
               {card.change && (
-                <div className={`
-                  text-xs font-semibold px-2 py-1 rounded-full
-                  ${card.changeType === 'positive' ? 'bg-green-100 text-green-700' : 
-                    card.changeType === 'negative' ? 'bg-red-100 text-red-700' : 
-                    'bg-gray-100 text-gray-700'}
-                `}>
+                <div 
+                  className="text-xs font-semibold px-2 py-1 rounded-full"
+                  style={{
+                    backgroundColor: card.changeType === 'positive' ? 'var(--bg-success)' : 
+                      card.changeType === 'negative' ? 'var(--bg-error)' : 
+                      'var(--bg-elevated)',
+                    color: card.changeType === 'positive' ? 'var(--accent-success)' : 
+                      card.changeType === 'negative' ? 'var(--accent-cherry)' : 
+                      'var(--text-secondary)'
+                  }}
+                >
                   {card.change}
                 </div>
               )}
             </div>
             
             <div>
-              <p className="text-sm font-medium text-gray-600 mb-2">{card.title}</p>
-              <p className="text-2xl font-bold text-gray-900 mb-1">{card.value}</p>
+              <p className="text-sm font-medium mb-2" style={{ color: 'var(--text-secondary)' }}>{card.title}</p>
+              <p className="text-2xl font-bold mb-1" style={{ color: 'var(--text-primary)' }}>{card.value}</p>
               {card.subtitle && (
-                <p className="text-sm text-gray-600 font-medium">{card.subtitle}</p>
+                <p className="text-sm font-medium" style={{ color: 'var(--text-muted)' }}>{card.subtitle}</p>
               )}
             </div>
           </div>
