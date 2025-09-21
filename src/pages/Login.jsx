@@ -175,8 +175,6 @@ export default function Login() {
                       </div>
                       <div className="login-store-info">
                         <h3>{store.name}</h3>
-                        {store.location && <p className="login-store-location">{store.location}</p>}
-                        {store.phone && <p className="login-store-phone">{store.phone}</p>}
                       </div>
                       <div className="login-store-arrow">→</div>
                     </button>
