@@ -12,6 +12,15 @@ export const useProductStock = () => {
 
   // Open stock modal and load inventory data
   const openStockModal = useCallback(async (product) => {
+    // Ensure we have a valid product
+    if (!product || !product.id) {
+      console.error('Invalid product provided to openStockModal')
+      return
+    }
+
+    // Close any other modals that might be open by dispatching a custom event
+    window.dispatchEvent(new CustomEvent('closeOtherModals', { detail: { source: 'stockModal' } }))
+    
     setStockModal({ open: true, product, inventory: [], loading: true, error: '' })
     
     try {

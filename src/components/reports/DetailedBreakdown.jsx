@@ -19,13 +19,37 @@ const DetailedBreakdown = ({
   if (!breakdown) return null
 
   const renderDailyBreakdown = () => (
-    <div className="mt-6 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-200">
+    <div 
+      className="mt-6 rounded-xl p-6 border transition-all duration-300"
+      style={{
+        background: 'var(--bg-card)',
+        borderColor: 'var(--border-primary)',
+        boxShadow: 'var(--shadow-lg)',
+        borderTop: '4px solid var(--accent-vapor)'
+      }}
+    >
       <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center space-x-2">
-          <ShoppingCart className="h-6 w-6 text-blue-600" />
-          <h3 className="text-xl font-bold text-blue-800">Detailed Store Breakdown</h3>
+        <div className="flex items-center space-x-3">
+          <div 
+            className="w-10 h-10 rounded-lg flex items-center justify-center"
+            style={{
+              background: 'linear-gradient(135deg, var(--accent-vapor) 0%, var(--accent-purple) 100%)',
+              boxShadow: 'var(--shadow-sm)'
+            }}
+          >
+            <ShoppingCart className="h-5 w-5 text-white" />
+          </div>
+          <h3 
+            className="text-xl font-bold"
+            style={{ color: 'var(--text-primary)' }}
+          >
+            Detailed Store Breakdown
+          </h3>
         </div>
-        <div className="text-base text-blue-600 font-medium">
+        <div 
+          className="text-base font-medium"
+          style={{ color: 'var(--text-secondary)' }}
+        >
           {new Date(breakdown.date).toLocaleDateString('en-US', { 
             weekday: 'long', 
             year: 'numeric', 
@@ -37,31 +61,88 @@ const DetailedBreakdown = ({
 
       {/* Overall Summary */}
       <div className={`grid ${isMobile ? 'grid-cols-2 gap-3' : 'grid-cols-3 gap-4'} mb-6`}>
-        <div className="bg-white rounded-lg p-3 border border-green-200">
-          <div className="flex items-center space-x-2 mb-1">
-            <DollarSign className="h-4 w-4 text-green-600" />
-            <span className="text-sm font-medium text-gray-600">Total Revenue</span>
+        <div 
+          className="rounded-lg p-4 border transition-all duration-300 hover:shadow-md hover:-translate-y-0.5"
+          style={{
+            background: 'var(--bg-card)',
+            borderColor: 'var(--border-primary)',
+            boxShadow: 'var(--shadow-sm)',
+            borderTop: '3px solid var(--accent-success)'
+          }}
+        >
+          <div className="flex items-center space-x-2 mb-2">
+            <DollarSign 
+              className="h-4 w-4" 
+              style={{ color: 'var(--accent-success)' }}
+            />
+            <span 
+              className="text-sm font-medium"
+              style={{ color: 'var(--text-secondary)' }}
+            >
+              Total Revenue
+            </span>
           </div>
-          <div className="text-xl font-bold text-green-700">
+          <div 
+            className="text-xl font-bold"
+            style={{ color: 'var(--text-primary)' }}
+          >
             {formatCurrency(breakdown.total_revenue || 0)}
           </div>
         </div>
-        <div className="bg-white rounded-lg p-3 border border-blue-200">
-          <div className="flex items-center space-x-2 mb-1">
-            <Users className="h-4 w-4 text-blue-600" />
-            <span className="text-sm font-medium text-gray-600">Total Transactions</span>
+        <div 
+          className="rounded-lg p-4 border transition-all duration-300 hover:shadow-md hover:-translate-y-0.5"
+          style={{
+            background: 'var(--bg-card)',
+            borderColor: 'var(--border-primary)',
+            boxShadow: 'var(--shadow-sm)',
+            borderTop: '3px solid var(--accent-vapor)'
+          }}
+        >
+          <div className="flex items-center space-x-2 mb-2">
+            <Users 
+              className="h-4 w-4" 
+              style={{ color: 'var(--accent-vapor)' }}
+            />
+            <span 
+              className="text-sm font-medium"
+              style={{ color: 'var(--text-secondary)' }}
+            >
+              Total Transactions
+            </span>
           </div>
-          <div className="text-xl font-bold text-blue-700">
+          <div 
+            className="text-xl font-bold"
+            style={{ color: 'var(--text-primary)' }}
+          >
             {breakdown.total_transactions || 0}
           </div>
         </div>
         {!isMobile && (
-          <div className="bg-white rounded-lg p-3 border border-purple-200">
-            <div className="flex items-center space-x-2 mb-1">
-              <BarChart3 className="h-4 w-4 text-purple-600" />
-              <span className="text-sm font-medium text-gray-600">Active Stores</span>
+          <div 
+            className="rounded-lg p-4 border transition-all duration-300 hover:shadow-md hover:-translate-y-0.5"
+            style={{
+              background: 'var(--bg-card)',
+              borderColor: 'var(--border-primary)',
+              boxShadow: 'var(--shadow-sm)',
+              borderTop: '3px solid var(--accent-purple)'
+            }}
+          >
+            <div className="flex items-center space-x-2 mb-2">
+              <BarChart3 
+                className="h-4 w-4" 
+                style={{ color: 'var(--accent-purple)' }}
+              />
+              <span 
+                className="text-sm font-medium"
+                style={{ color: 'var(--text-secondary)' }}
+              >
+                Active Stores
+              </span>
             </div>
-            <div className="text-xl font-bold text-purple-700">
+            <div 
+              className="text-xl font-bold"
+              style={{ color: 'var(--text-primary)' }}
+            >
               {breakdown.stores ? breakdown.stores.length : 0}
             </div>
           </div>
@@ -72,24 +153,62 @@ const DetailedBreakdown = ({
       {breakdown.stores && breakdown.stores.length > 0 ? (
         <div className="space-y-6">
           {breakdown.stores.map((store, storeIndex) => (
-            <div key={store.store_id} className="bg-white rounded-xl p-4 border border-gray-200 shadow-sm">
+            <div 
+              key={store.store_id} 
+              className="rounded-xl p-6 border transition-all duration-300 hover:shadow-lg"
+              style={{
+                background: 'var(--bg-card)',
+                borderColor: 'var(--border-primary)',
+                boxShadow: 'var(--shadow-sm)',
+                borderTop: '3px solid var(--accent-warning)'
+              }}
+            >
               {/* Store Header */}
-              <div className={`flex ${isMobile ? 'flex-col space-y-3' : 'justify-between items-start'} mb-4`}>
+              <div className={`flex ${isMobile ? 'flex-col space-y-4' : 'justify-between items-start'} mb-6`}>
                 <div className="flex-1">
-                  <div className="flex items-center space-x-2 mb-1">
-                    <DollarSign className="h-5 w-5 text-green-600" />
-                    <h4 className="font-bold text-xl text-gray-800">{store.store_name}</h4>
+                  <div className="flex items-center space-x-3 mb-2">
+                    <div 
+                      className="w-8 h-8 rounded-lg flex items-center justify-center"
+                      style={{
+                        background: 'linear-gradient(135deg, var(--accent-warning) 0%, #f59e0b 100%)',
+                        boxShadow: 'var(--shadow-sm)'
+                      }}
+                    >
+                      <DollarSign className="h-4 w-4 text-white" />
+                    </div>
+                    <h4 
+                      className="font-bold text-xl"
+                      style={{ color: 'var(--text-primary)' }}
+                    >
+                      {store.store_name}
+                    </h4>
                   </div>
-                  <p className="text-gray-600 flex items-center space-x-1">
+                  <p 
+                    className="flex items-center space-x-2"
+                    style={{ color: 'var(--text-secondary)' }}
+                  >
                     <span>📍</span>
                     <span>{store.store_location}</span>
                   </p>
                 </div>
-                <div className={`${isMobile ? 'bg-gradient-to-r from-green-50 to-blue-50 rounded-xl p-4 w-full' : 'text-right bg-gradient-to-br from-green-50 to-green-100 rounded-lg p-4'}`}>
-                  <div className="text-2xl font-bold text-green-700 mb-1">
+                <div 
+                  className={`${isMobile ? 'w-full' : 'text-right'} rounded-xl p-4 border`}
+                  style={{
+                    background: 'var(--bg-elevated)',
+                    borderColor: 'var(--border-secondary)',
+                    borderTop: '2px solid var(--accent-success)'
+                  }}
+                >
+                  <div 
+                    className="text-2xl font-bold mb-1"
+                    style={{ color: 'var(--accent-success)' }}
+                  >
                     {formatCurrency(store.total_revenue)}
                   </div>
-                  <div className="text-sm text-gray-600">
+                  <div 
+                    className="text-sm"
+                    style={{ color: 'var(--text-secondary)' }}
+                  >
                     {store.total_transactions} transactions
                   </div>
                 </div>
@@ -97,9 +216,15 @@ const DetailedBreakdown = ({
 
               {/* Products for this store */}
               {store.products && store.products.length > 0 ? (
-                <div className="space-y-3">
-                  <h5 className="text-lg font-semibold text-gray-800 mb-3 flex items-center space-x-2">
-                    <Package className="h-4 w-4 text-indigo-600" />
+                <div className="space-y-4">
+                  <h5 
+                    className="text-lg font-semibold mb-3 flex items-center space-x-2"
+                    style={{ color: 'var(--text-primary)' }}
+                  >
+                    <Package 
+                      className="h-5 w-5" 
+                      style={{ color: 'var(--accent-vapor)' }}
+                    />
                     <span>Products Sold</span>
                   </h5>
                   <div className={`${isMobile ? 'space-y-3' : 'grid grid-cols-1 lg:grid-cols-2 gap-4'}`}>
@@ -114,31 +239,68 @@ const DetailedBreakdown = ({
                   </div>
                 </div>
               ) : (
-                <div className="text-center py-8 text-gray-500">
-                  <Package className="h-8 w-8 mx-auto mb-2 text-gray-300" />
-                  <p className="text-sm">No products sold at this store today</p>
+                <div className="text-center py-8">
+                  <Package 
+                    className="h-12 w-12 mx-auto mb-3" 
+                    style={{ color: 'var(--text-muted)' }}
+                  />
+                  <p 
+                    className="text-sm"
+                    style={{ color: 'var(--text-secondary)' }}
+                  >
+                    No products sold at this store today
+                  </p>
                 </div>
               )}
             </div>
           ))}
         </div>
       ) : (
-        <div className="text-center py-8 text-gray-500">
-          <ShoppingCart className="h-12 w-12 mx-auto mb-3 text-gray-300" />
-          <p>No sales recorded for this date</p>
+        <div className="text-center py-12">
+          <ShoppingCart 
+            className="h-16 w-16 mx-auto mb-4" 
+            style={{ color: 'var(--text-muted)' }}
+          />
+          <p style={{ color: 'var(--text-secondary)' }}>
+            No sales recorded for this date
+          </p>
         </div>
       )}
     </div>
   )
 
   const renderMonthlyBreakdown = () => (
-    <div className="mt-6 bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl p-6 border border-indigo-200">
+    <div 
+      className="mt-6 rounded-xl p-6 border transition-all duration-300"
+      style={{
+        background: 'var(--bg-card)',
+        borderColor: 'var(--border-primary)',
+        boxShadow: 'var(--shadow-lg)',
+        borderTop: '4px solid var(--accent-purple)'
+      }}
+    >
       <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center space-x-2">
-          <BarChart3 className="h-6 w-6 text-indigo-600" />
-          <h3 className="text-xl font-bold text-indigo-800">Detailed Monthly Breakdown</h3>
+        <div className="flex items-center space-x-3">
+          <div 
+            className="w-10 h-10 rounded-lg flex items-center justify-center"
+            style={{
+              background: 'linear-gradient(135deg, var(--accent-purple) 0%, var(--accent-vapor) 100%)',
+              boxShadow: 'var(--shadow-sm)'
+            }}
+          >
+            <BarChart3 className="h-5 w-5 text-white" />
+          </div>
+          <h3 
+            className="text-xl font-bold"
+            style={{ color: 'var(--text-primary)' }}
+          >
+            Detailed Monthly Breakdown
+          </h3>
         </div>
-        <div className="text-base text-indigo-600 font-medium">
+        <div 
+          className="text-base font-medium"
+          style={{ color: 'var(--text-secondary)' }}
+        >
           {breakdown.month_name}
         </div>
       </div>
@@ -212,26 +374,47 @@ const DetailedBreakdown = ({
 
 // Product Card Component
 const ProductCard = ({ product, isMobile, showSalesDetails }) => (
-  <div className={`bg-gray-50 rounded-lg ${isMobile ? 'p-3' : 'p-4'} border border-gray-200`}>
-    <div className="flex justify-between items-start mb-2">
+  <div 
+    className={`rounded-lg ${isMobile ? 'p-3' : 'p-4'} border transition-all duration-200 hover:shadow-md`}
+    style={{
+      background: 'var(--bg-elevated)',
+      borderColor: 'var(--border-secondary)',
+      borderTop: '2px solid var(--accent-purple)'
+    }}
+  >
+    <div className="flex justify-between items-start mb-3">
       <div className="flex-1">
-        <h6 className={`${isMobile ? 'text-sm' : 'text-base'} font-semibold text-gray-800 mb-1`}>
+        <h6 
+          className={`${isMobile ? 'text-sm' : 'text-base'} font-semibold mb-2`}
+          style={{ color: 'var(--text-primary)' }}
+        >
           {product.product_name}
         </h6>
         <div className="flex items-center space-x-2 mb-2">
-          <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-            product.category === 'fruities' ? 'bg-green-100 text-green-800' :
-            product.category === 'gourmands' ? 'bg-purple-100 text-purple-800' :
-            product.category === 'puffs' ? 'bg-blue-100 text-blue-800' :
-            product.category === 'coils' ? 'bg-orange-100 text-orange-800' :
-            'bg-gray-100 text-gray-800'
-          }`}>
+          <span 
+            className="px-2 py-1 rounded-full text-xs font-medium"
+            style={{
+              background: product.category === 'fruities' ? 'var(--bg-success)' :
+                         product.category === 'gourmands' ? 'var(--bg-purple)' :
+                         product.category === 'puffs' ? 'var(--bg-vapor)' :
+                         product.category === 'coils' ? 'var(--bg-warning)' :
+                         'var(--bg-elevated)',
+              color: product.category === 'fruities' ? 'var(--accent-success)' :
+                     product.category === 'gourmands' ? 'var(--accent-purple)' :
+                     product.category === 'puffs' ? 'var(--accent-vapor)' :
+                     product.category === 'coils' ? 'var(--accent-warning)' :
+                     'var(--text-secondary)'
+            }}
+          >
             {product.category}
           </span>
         </div>
       </div>
       <div className="text-right">
-        <div className={`${isMobile ? 'text-lg' : 'text-xl'} font-bold text-green-700`}>
+        <div 
+          className={`${isMobile ? 'text-lg' : 'text-xl'} font-bold`}
+          style={{ color: 'var(--accent-success)' }}
+        >
           {formatCurrency(product.total_sales || 0)}
         </div>
       </div>
@@ -239,47 +422,112 @@ const ProductCard = ({ product, isMobile, showSalesDetails }) => (
     
     <div className={`grid ${isMobile ? 'grid-cols-2 gap-2' : 'grid-cols-3 gap-3'} text-sm mb-3`}>
       <div className="flex items-center space-x-1">
-        <Users className="h-3 w-3 text-gray-500" />
-        <span className="text-gray-600">Sales:</span>
-        <span className="font-semibold">{product.transaction_count || 0}</span>
+        <Users 
+          className="h-3 w-3" 
+          style={{ color: 'var(--text-muted)' }}
+        />
+        <span style={{ color: 'var(--text-secondary)' }}>Sales:</span>
+        <span 
+          className="font-semibold"
+          style={{ color: 'var(--text-primary)' }}
+        >
+          {product.transaction_count || 0}
+        </span>
       </div>
       {product.total_quantity > 0 && (
         <div className="flex items-center space-x-1">
-          <Package className="h-3 w-3 text-gray-500" />
-          <span className="text-gray-600">Qty:</span>
-          <span className="font-semibold">{product.total_quantity}</span>
+          <Package 
+            className="h-3 w-3" 
+            style={{ color: 'var(--text-muted)' }}
+          />
+          <span style={{ color: 'var(--text-secondary)' }}>Qty:</span>
+          <span 
+            className="font-semibold"
+            style={{ color: 'var(--text-primary)' }}
+          >
+            {product.total_quantity}
+          </span>
         </div>
       )}
       {product.total_ml > 0 && (
         <div className="flex items-center space-x-1">
-          <Package className="h-3 w-3 text-gray-500" />
-          <span className="text-gray-600">ML:</span>
-          <span className="font-semibold">{product.total_ml}</span>
+          <Package 
+            className="h-3 w-3" 
+            style={{ color: 'var(--text-muted)' }}
+          />
+          <span style={{ color: 'var(--text-secondary)' }}>ML:</span>
+          <span 
+            className="font-semibold"
+            style={{ color: 'var(--text-primary)' }}
+          >
+            {product.total_ml}
+          </span>
         </div>
       )}
       {!isMobile && (
         <div className="flex items-center space-x-1">
-          <DollarSign className="h-3 w-3 text-gray-500" />
-          <span className="text-gray-600">Avg:</span>
-          <span className="font-semibold">{formatCurrency(product.average_price || 0)}</span>
+          <DollarSign 
+            className="h-3 w-3" 
+            style={{ color: 'var(--text-muted)' }}
+          />
+          <span style={{ color: 'var(--text-secondary)' }}>Avg:</span>
+          <span 
+            className="font-semibold"
+            style={{ color: 'var(--accent-success)' }}
+          >
+            {formatCurrency(product.average_price || 0)}
+          </span>
         </div>
       )}
     </div>
 
     {/* Individual Sales for this product */}
     {showSalesDetails && product.sales_details && product.sales_details.length > 0 && (
-      <div className="mt-3 pt-3 border-t border-gray-200">
-        <div className="text-sm text-gray-600 mb-2 font-medium">Individual Sales:</div>
-        <div className="space-y-1 max-h-32 overflow-y-auto">
+      <div 
+        className="mt-3 pt-3 border-t"
+        style={{ borderColor: 'var(--border-secondary)' }}
+      >
+        <div 
+          className="text-sm mb-2 font-medium"
+          style={{ color: 'var(--text-secondary)' }}
+        >
+          Individual Sales:
+        </div>
+        <div className="space-y-2 max-h-32 overflow-y-auto">
           {product.sales_details.map((sale, saleIndex) => (
-            <div key={sale.id || saleIndex} className="flex justify-between items-center text-xs bg-white rounded p-2">
+            <div 
+              key={sale.id || saleIndex} 
+              className="flex justify-between items-center text-xs rounded p-2 border"
+              style={{
+                background: 'var(--bg-card)',
+                borderColor: 'var(--border-secondary)'
+              }}
+            >
               <div className="flex items-center space-x-2">
-                <span className="font-medium">{sale.time}</span>
-                <span className="text-gray-500">by {sale.worker_name}</span>
-                {sale.quantity && <span className="text-blue-600">×{sale.quantity}</span>}
-                {sale.ml_amount && <span className="text-blue-600">{sale.ml_amount}ml</span>}
+                <span 
+                  className="font-medium"
+                  style={{ color: 'var(--text-primary)' }}
+                >
+                  {sale.time}
+                </span>
+                <span style={{ color: 'var(--text-muted)' }}>
+                  by {sale.worker_name}
+                </span>
+                {sale.quantity && (
+                  <span style={{ color: 'var(--accent-vapor)' }}>
+                    ×{sale.quantity}
+                  </span>
+                )}
+                {sale.ml_amount && (
+                  <span style={{ color: 'var(--accent-vapor)' }}>
+                    {sale.ml_amount}ml
+                  </span>
+                )}
               </div>
-              <span className="font-semibold text-green-600">
+              <span 
+                className="font-semibold"
+                style={{ color: 'var(--accent-success)' }}
+              >
                 {formatCurrency(sale.price)}
               </span>
             </div>

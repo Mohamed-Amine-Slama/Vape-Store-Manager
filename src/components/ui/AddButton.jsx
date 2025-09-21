@@ -182,12 +182,12 @@ const AddButton = ({
       {loading ? (
         <>
           <div className="loading-spinner" style={{
-            width: currentSize.iconSize.split(' ')[0].replace('h-', '').replace('4', '16px').replace('5', '20px').replace('6', '24px'),
-            height: currentSize.iconSize.split(' ')[1].replace('w-', '').replace('4', '16px').replace('5', '20px').replace('6', '24px'),
-            border: '2px solid currentColor',
-            borderTop: '2px solid transparent',
+            width: currentSize.iconSize,
+            height: currentSize.iconSize,
+            border: '2px solid transparent',
+            borderTop: '2px solid currentColor',
             borderRadius: '50%',
-            animation: 'spin 1s linear infinite'
+            animation: 'addButtonSpin 1s linear infinite'
           }} />
           <span>Adding...</span>
         </>
@@ -200,14 +200,10 @@ const AddButton = ({
         </>
       )}
       
-      <style jsx>{`
-        @keyframes spin {
+      <style>{`
+        @keyframes addButtonSpin {
           0% { transform: rotate(0deg); }
           100% { transform: rotate(360deg); }
-        }
-        
-        .loading-spinner {
-          animation: spin 1s linear infinite;
         }
       `}</style>
     </button>

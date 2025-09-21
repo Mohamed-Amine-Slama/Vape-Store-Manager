@@ -6,6 +6,7 @@ export const useProductCatalog = () => {
   const [products, setProducts] = useState([])
   const [loading, setLoading] = useState(true)
   const [selectedCategory, setSelectedCategory] = useState('all')
+  const [searchQuery, setSearchQuery] = useState('')
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
 
@@ -229,10 +230,17 @@ export const useProductCatalog = () => {
     }
   }, [products])
 
-  // Filter products by category
-  const filteredProducts = selectedCategory === 'all' 
-    ? products 
-    : products.filter(product => product.category === selectedCategory)
+  // Filter products by category and search query
+  const filteredProducts = products.filter(product => {
+    // Filter by category
+    const categoryMatch = selectedCategory === 'all' || product.category === selectedCategory
+    
+    // Filter by search query (case-insensitive)
+    const searchMatch = !searchQuery || 
+      product.name.toLowerCase().includes(searchQuery.toLowerCase())
+    
+    return categoryMatch && searchMatch
+  })
 
   // Get category stats
   const categoryStats = categories.map(category => ({
@@ -266,6 +274,7 @@ export const useProductCatalog = () => {
     filteredProducts,
     loading,
     selectedCategory,
+    searchQuery,
     error,
     success,
     categories,
@@ -274,6 +283,7 @@ export const useProductCatalog = () => {
     
     // Actions
     setSelectedCategory,
+    setSearchQuery,
     loadProducts,
     createProduct,
     updateProduct,

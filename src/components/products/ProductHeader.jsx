@@ -1,6 +1,6 @@
 import React from 'react'
 import { Button, AddButton } from '../ui'
-import { Package, Plus, RefreshCw } from 'lucide-react'
+import { Package, Plus, RefreshCw, Search, X } from 'lucide-react'
 
 const ProductHeader = ({
   selectedCategory,
@@ -11,7 +11,9 @@ const ProductHeader = ({
   onAddProduct,
   onRefresh,
   loading,
-  isMobile
+  isMobile,
+  searchQuery,
+  setSearchQuery
 }) => {
   return (
     <div className="rounded-xl p-6 mb-6 relative overflow-hidden" style={{ backgroundColor: 'var(--bg-card)', boxShadow: 'var(--shadow-lg)', border: '1px solid var(--border-primary)' }}>
@@ -63,6 +65,55 @@ const ProductHeader = ({
         </div>
       </div>
 
+      {/* Search Filter */}
+      <div className="mb-6">
+        <div className="relative">
+          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <Search className="h-5 w-5" style={{ color: 'var(--text-muted)' }} />
+          </div>
+          <input
+            type="text"
+            placeholder="Search products by name..."
+            value={searchQuery || ''}
+            onChange={(e) => setSearchQuery && setSearchQuery(e.target.value)}
+            className={`
+              block w-full pl-10 pr-10 py-3 rounded-xl border transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2
+              ${isMobile ? 'text-base' : 'text-sm'}
+            `}
+            style={{
+              backgroundColor: 'var(--bg-elevated)',
+              borderColor: 'var(--border-primary)',
+              color: 'var(--text-primary)',
+              focusRingColor: 'var(--accent-vapor)'
+            }}
+            onFocus={(e) => {
+              e.target.style.borderColor = 'var(--accent-vapor)'
+              e.target.style.boxShadow = '0 0 0 3px rgba(6, 182, 212, 0.1)'
+            }}
+            onBlur={(e) => {
+              e.target.style.borderColor = 'var(--border-primary)'
+              e.target.style.boxShadow = 'none'
+            }}
+          />
+          {searchQuery && (
+            <button
+              onClick={() => setSearchQuery && setSearchQuery('')}
+              className="absolute inset-y-0 right-0 pr-3 flex items-center transition-colors duration-200"
+              style={{ color: 'var(--text-muted)' }}
+              onMouseEnter={(e) => e.target.style.color = 'var(--text-primary)'}
+              onMouseLeave={(e) => e.target.style.color = 'var(--text-muted)'}
+            >
+              <X className="h-5 w-5" />
+            </button>
+          )}
+        </div>
+        {searchQuery && (
+          <div className="mt-2 text-sm" style={{ color: 'var(--text-secondary)' }}>
+            {filteredProducts?.length || 0} product{filteredProducts?.length !== 1 ? 's' : ''} found for "{searchQuery}"
+          </div>
+        )}
+      </div>
+
       {/* Category Filter Tabs */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">
@@ -79,37 +130,51 @@ const ProductHeader = ({
         {/* Mobile: Scrollable horizontal tabs */}
         {isMobile ? (
           <div className="overflow-x-auto pb-4">
-            <div className="flex space-x-6 min-w-max px-4 py-3">
+            <div className="flex space-x-4 min-w-max px-4 py-3">
               {/* All Categories - Mobile */}
               <button
                 onClick={() => setSelectedCategory('all')}
-                className={`
-                  flex items-center space-x-3 px-6 py-4 rounded-2xl font-medium transition-all duration-200 whitespace-nowrap shadow-md hover:shadow-lg transform hover:scale-105
-                  ${selectedCategory === 'all'
-                    ? 'bg-gradient-to-r from-teal-500 to-teal-600 text-white shadow-teal-200 scale-105'
-                    : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200 hover:border-teal-300 hover:shadow-teal-100'
-                  }
-                `}
+                className="flex items-center space-x-3 px-5 py-3 rounded-xl font-medium transition-all duration-300 whitespace-nowrap border"
                 style={{
-                  backdropFilter: 'blur(10px)',
+                  background: selectedCategory === 'all' 
+                    ? 'linear-gradient(135deg, var(--accent-vapor) 0%, var(--accent-purple) 100%)'
+                    : 'var(--bg-card)',
+                  borderColor: selectedCategory === 'all' 
+                    ? 'transparent'
+                    : 'var(--border-primary)',
+                  color: selectedCategory === 'all' ? 'white' : 'var(--text-primary)',
                   boxShadow: selectedCategory === 'all' 
-                    ? '0 6px 20px rgba(15, 118, 110, 0.3), 0 2px 8px rgba(15, 118, 110, 0.2)' 
-                    : '0 2px 8px rgba(0, 0, 0, 0.1)'
+                    ? 'var(--shadow-lg)' 
+                    : 'var(--shadow-sm)',
+                  transform: selectedCategory === 'all' ? 'translateY(-1px)' : 'translateY(0)'
+                }}
+                onMouseEnter={(e) => {
+                  if (selectedCategory !== 'all') {
+                    e.target.style.background = 'var(--bg-hover)'
+                    e.target.style.transform = 'translateY(-1px)'
+                    e.target.style.boxShadow = 'var(--shadow-md)'
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (selectedCategory !== 'all') {
+                    e.target.style.background = 'var(--bg-card)'
+                    e.target.style.transform = 'translateY(0)'
+                    e.target.style.boxShadow = 'var(--shadow-sm)'
+                  }
                 }}
               >
-                <div className={`p-2 rounded-2xl ${selectedCategory === 'all' ? 'bg-white bg-opacity-25 shadow-inner' : 'bg-gradient-to-br from-gray-100 to-gray-200'}`}>
+                <div 
+                  className="w-8 h-8 rounded-lg flex items-center justify-center"
+                  style={{
+                    background: selectedCategory === 'all' 
+                      ? 'rgba(255, 255, 255, 0.2)'
+                      : 'var(--bg-elevated)',
+                    boxShadow: 'var(--shadow-sm)'
+                  }}
+                >
                   <Package className="h-4 w-4" />
                 </div>
-                <span className="text-sm font-bold">All</span>
-                <span className={`
-                  px-3 py-1.5 text-xs rounded-full font-semibold min-w-[28px] text-center
-                  ${selectedCategory === 'all' 
-                    ? 'bg-white text-teal-700' 
-                    : 'bg-teal-100 text-teal-700'
-                  }
-                `}>
-                  {categoryStats.reduce((sum, cat) => sum + cat.count, 0)}
-                </span>
+                <span className="text-sm font-semibold">All</span>
               </button>
 
               {/* Individual Categories - Mobile */}
@@ -122,39 +187,53 @@ const ProductHeader = ({
                   <button
                     key={category.value}
                     onClick={() => setSelectedCategory(category.value)}
-                    className={`
-                      flex items-center space-x-3 px-6 py-4 rounded-2xl font-medium transition-all duration-200 whitespace-nowrap shadow-md hover:shadow-lg transform hover:scale-105
-                      ${isSelected
-                        ? 'bg-gradient-to-r from-teal-500 to-teal-600 text-white shadow-teal-200 scale-105'
-                        : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200 hover:border-teal-300 hover:shadow-teal-100'
-                      }
-                    `}
+                    className="flex items-center space-x-3 px-5 py-3 rounded-xl font-medium transition-all duration-300 whitespace-nowrap border"
                     style={{
-                      backdropFilter: 'blur(10px)',
+                      background: isSelected 
+                        ? 'linear-gradient(135deg, var(--accent-vapor) 0%, var(--accent-purple) 100%)'
+                        : 'var(--bg-card)',
+                      borderColor: isSelected 
+                        ? 'transparent'
+                        : 'var(--border-primary)',
+                      color: isSelected ? 'white' : 'var(--text-primary)',
                       boxShadow: isSelected 
-                        ? '0 6px 20px rgba(15, 118, 110, 0.3), 0 2px 8px rgba(15, 118, 110, 0.2)' 
-                        : '0 2px 8px rgba(0, 0, 0, 0.1)'
+                        ? 'var(--shadow-lg)' 
+                        : 'var(--shadow-sm)',
+                      transform: isSelected ? 'translateY(-1px)' : 'translateY(0)'
+                    }}
+                    onMouseEnter={(e) => {
+                      if (!isSelected) {
+                        e.target.style.background = 'var(--bg-hover)'
+                        e.target.style.transform = 'translateY(-1px)'
+                        e.target.style.boxShadow = 'var(--shadow-md)'
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (!isSelected) {
+                        e.target.style.background = 'var(--bg-card)'
+                        e.target.style.transform = 'translateY(0)'
+                        e.target.style.boxShadow = 'var(--shadow-sm)'
+                      }
                     }}
                   >
                     <div 
-                      className={`w-5 h-5 rounded-full border-2 shadow-md ${isSelected ? 'border-white' : 'border-gray-300'}`}
-                      style={{ 
-                        backgroundColor: isSelected ? 'rgba(255,255,255,0.3)' : getCategoryColor(category.value),
-                        boxShadow: isSelected 
-                          ? `inset 0 0 0 2px ${getCategoryColor(category.value)}, 0 2px 8px rgba(0,0,0,0.2)` 
-                          : `0 2px 8px ${getCategoryColor(category.value)}60`
+                      className="w-6 h-6 rounded-lg flex items-center justify-center"
+                      style={{
+                        background: isSelected 
+                          ? 'rgba(255, 255, 255, 0.2)'
+                          : getCategoryColor(category.value) + '20',
+                        border: `2px solid ${isSelected ? 'rgba(255, 255, 255, 0.3)' : getCategoryColor(category.value)}`,
+                        boxShadow: 'var(--shadow-sm)'
                       }}
-                    />
-                    <span className="text-sm font-bold">{category.label}</span>
-                    <span className={`
-                      px-3 py-1.5 text-xs rounded-full font-semibold min-w-[28px] text-center
-                      ${isSelected 
-                        ? 'bg-white text-teal-700' 
-                        : 'bg-teal-100 text-teal-700'
-                      }
-                    `}>
-                      {count}
-                    </span>
+                    >
+                      <div 
+                        className="w-2 h-2 rounded-full"
+                        style={{ 
+                          backgroundColor: isSelected ? 'white' : getCategoryColor(category.value)
+                        }}
+                      />
+                    </div>
+                    <span className="text-sm font-semibold">{category.label}</span>
                   </button>
                 )
               })}
@@ -162,37 +241,51 @@ const ProductHeader = ({
           </div>
         ) : (
           /* Desktop: Wrapped grid layout */
-          <div className="flex flex-wrap gap-6 p-4">
+          <div className="flex flex-wrap gap-4 p-4">
             {/* All Categories - Desktop */}
             <button
               onClick={() => setSelectedCategory('all')}
-              className={`
-                flex items-center space-x-4 px-8 py-5 rounded-2xl font-medium transition-all duration-200 hover:scale-105 shadow-lg hover:shadow-xl transform
-                ${selectedCategory === 'all'
-                  ? 'bg-gradient-to-r from-teal-500 to-teal-600 text-white shadow-teal-200 scale-105'
-                  : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200 hover:border-teal-300 hover:shadow-teal-200'
-                }
-              `}
+              className="flex items-center space-x-4 px-6 py-4 rounded-xl font-medium transition-all duration-300 border"
               style={{
-                backdropFilter: 'blur(10px)',
+                background: selectedCategory === 'all' 
+                  ? 'linear-gradient(135deg, var(--accent-vapor) 0%, var(--accent-purple) 100%)'
+                  : 'var(--bg-card)',
+                borderColor: selectedCategory === 'all' 
+                  ? 'transparent'
+                  : 'var(--border-primary)',
+                color: selectedCategory === 'all' ? 'white' : 'var(--text-primary)',
                 boxShadow: selectedCategory === 'all' 
-                  ? '0 8px 25px rgba(15, 118, 110, 0.4), 0 4px 12px rgba(15, 118, 110, 0.3)' 
-                  : '0 4px 12px rgba(0, 0, 0, 0.1)'
+                  ? 'var(--shadow-lg)' 
+                  : 'var(--shadow-sm)',
+                transform: selectedCategory === 'all' ? 'translateY(-2px)' : 'translateY(0)'
+              }}
+              onMouseEnter={(e) => {
+                if (selectedCategory !== 'all') {
+                  e.target.style.background = 'var(--bg-hover)'
+                  e.target.style.transform = 'translateY(-2px)'
+                  e.target.style.boxShadow = 'var(--shadow-md)'
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (selectedCategory !== 'all') {
+                  e.target.style.background = 'var(--bg-card)'
+                  e.target.style.transform = 'translateY(0)'
+                  e.target.style.boxShadow = 'var(--shadow-sm)'
+                }
               }}
             >
-              <div className={`p-3 rounded-2xl shadow-inner ${selectedCategory === 'all' ? 'bg-white bg-opacity-25' : 'bg-gradient-to-br from-gray-100 to-gray-200'}`}>
-                <Package className="h-6 w-6" />
+              <div 
+                className="w-10 h-10 rounded-xl flex items-center justify-center"
+                style={{
+                  background: selectedCategory === 'all' 
+                    ? 'rgba(255, 255, 255, 0.2)'
+                    : 'var(--bg-elevated)',
+                  boxShadow: 'var(--shadow-sm)'
+                }}
+              >
+                <Package className="h-5 w-5" />
               </div>
-              <span className="text-base">All Products</span>
-              <span className={`
-                px-4 py-2 text-sm rounded-full font-semibold min-w-[36px] text-center
-                ${selectedCategory === 'all' 
-                  ? 'bg-white text-teal-700' 
-                  : 'bg-teal-100 text-teal-700'
-                }
-              `}>
-                {categoryStats.reduce((sum, cat) => sum + cat.count, 0)}
-              </span>
+              <span className="text-base font-semibold">All Products</span>
             </button>
 
             {/* Individual Categories - Desktop */}
@@ -205,39 +298,53 @@ const ProductHeader = ({
                 <button
                   key={category.value}
                   onClick={() => setSelectedCategory(category.value)}
-                  className={`
-                    flex items-center space-x-4 px-8 py-5 rounded-2xl font-medium transition-all duration-200 hover:scale-105 shadow-lg hover:shadow-xl transform
-                    ${isSelected
-                      ? 'bg-gradient-to-r from-teal-500 to-teal-600 text-white shadow-teal-200 scale-105'
-                      : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200 hover:border-teal-300 hover:shadow-teal-200'
-                    }
-                  `}
+                  className="flex items-center space-x-4 px-6 py-4 rounded-xl font-medium transition-all duration-300 border"
                   style={{
-                    backdropFilter: 'blur(10px)',
+                    background: isSelected 
+                      ? 'linear-gradient(135deg, var(--accent-vapor) 0%, var(--accent-purple) 100%)'
+                      : 'var(--bg-card)',
+                    borderColor: isSelected 
+                      ? 'transparent'
+                      : 'var(--border-primary)',
+                    color: isSelected ? 'white' : 'var(--text-primary)',
                     boxShadow: isSelected 
-                      ? '0 8px 25px rgba(15, 118, 110, 0.4), 0 4px 12px rgba(15, 118, 110, 0.3)' 
-                      : '0 4px 12px rgba(0, 0, 0, 0.1)'
+                      ? 'var(--shadow-lg)' 
+                      : 'var(--shadow-sm)',
+                    transform: isSelected ? 'translateY(-2px)' : 'translateY(0)'
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!isSelected) {
+                      e.target.style.background = 'var(--bg-hover)'
+                      e.target.style.transform = 'translateY(-2px)'
+                      e.target.style.boxShadow = 'var(--shadow-md)'
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!isSelected) {
+                      e.target.style.background = 'var(--bg-card)'
+                      e.target.style.transform = 'translateY(0)'
+                      e.target.style.boxShadow = 'var(--shadow-sm)'
+                    }
                   }}
                 >
                   <div 
-                    className={`w-6 h-6 rounded-full border-2 shadow-lg ${isSelected ? 'border-white' : 'border-gray-300'}`}
-                    style={{ 
-                      backgroundColor: isSelected ? 'rgba(255,255,255,0.3)' : getCategoryColor(category.value),
-                      boxShadow: isSelected 
-                        ? `inset 0 0 0 2px ${getCategoryColor(category.value)}, 0 4px 16px rgba(0,0,0,0.2)` 
-                        : `0 4px 16px ${getCategoryColor(category.value)}60`
+                    className="w-8 h-8 rounded-xl flex items-center justify-center"
+                    style={{
+                      background: isSelected 
+                        ? 'rgba(255, 255, 255, 0.2)'
+                        : getCategoryColor(category.value) + '20',
+                      border: `2px solid ${isSelected ? 'rgba(255, 255, 255, 0.3)' : getCategoryColor(category.value)}`,
+                      boxShadow: 'var(--shadow-sm)'
                     }}
-                  />
-                  <span className="text-base">{category.label}</span>
-                  <span className={`
-                    px-4 py-2 text-sm rounded-full font-semibold min-w-[36px] text-center
-                    ${isSelected 
-                      ? 'bg-white text-teal-700' 
-                      : 'bg-teal-100 text-teal-700'
-                    }
-                  `}>
-                    {count}
-                  </span>
+                  >
+                    <div 
+                      className="w-3 h-3 rounded-full"
+                      style={{ 
+                        backgroundColor: isSelected ? 'white' : getCategoryColor(category.value)
+                      }}
+                    />
+                  </div>
+                  <span className="text-base font-semibold">{category.label}</span>
                 </button>
               )
             })}

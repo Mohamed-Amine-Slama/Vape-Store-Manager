@@ -132,25 +132,25 @@ const CustomDropdown = ({
   
   const sizeConfig = {
     sm: {
-      button: 'px-3 py-2 text-sm min-h-[36px]',
+      button: 'px-3 py-3 text-sm min-h-[42px]',
       icon: 'h-4 w-4',
       label: 'text-xs',
       dropdown: 'text-sm',
-      option: 'px-3 py-2'
+      option: 'px-3 py-4'
     },
     md: {
-      button: isMobile ? 'px-4 py-4 text-base min-h-[52px]' : 'px-3 py-3 text-[0.95rem] min-h-[44px]',
-      icon: 'h-5 w-5',
-      label: 'text-sm',
-      dropdown: 'text-base',
-      option: 'px-4 py-3'
+      button: isMobile ? 'px-5 py-6 text-lg min-h-[65px]' : 'px-4 py-4 text-[1rem] min-h-[52px]',
+      icon: isMobile ? 'h-6 w-6' : 'h-5 w-5',
+      label: isMobile ? 'text-base' : 'text-sm',
+      dropdown: isMobile ? 'text-lg' : 'text-base',
+      option: isMobile ? 'px-10 py-20 min-h-[220px]' : 'px-4 py-4'
     },
     lg: {
-      button: 'px-5 py-4 text-lg min-h-[52px]',
+      button: 'px-5 py-5 text-lg min-h-[60px]',
       icon: 'h-6 w-6',
       label: 'text-base',
       dropdown: 'text-lg',
-      option: 'px-5 py-4'
+      option: 'px-5 py-6'
     }
   }
 
@@ -283,9 +283,10 @@ const CustomDropdown = ({
               borderRadius: isMobile ? '0.75rem' : '0.5rem'
             }}
             className={`
-              absolute z-50 w-full mt-2 border-2 max-h-80 overflow-hidden backdrop-blur-sm
+              absolute z-50 w-full mt-2 border-2 max-h-[450px] overflow-hidden backdrop-blur-sm
               transition-all duration-300 ease-out
               ${isOpen ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 scale-95 -translate-y-2'}
+              ${isMobile ? 'w-[110%] -ml-[5%]' : 'w-full'}
             `}>
             {/* Search Input */}
             {searchable && (
@@ -326,7 +327,7 @@ const CustomDropdown = ({
             )}
 
             {/* Options List */}
-            <div className="max-h-64 overflow-y-auto scrollbar-thin scrollbar-track-transparent" style={{ scrollbarColor: 'var(--border-primary) transparent' }}>
+            <div className={`${isMobile ? 'max-h-[400px]' : 'max-h-[350px]'} overflow-y-auto scrollbar-thin scrollbar-track-transparent`} style={{ scrollbarColor: 'var(--border-primary) transparent' }}>
               {filteredOptions.length === 0 ? (
                 <div className={`
                   px-6 py-8 text-center ${currentSize.dropdown}
@@ -345,7 +346,7 @@ const CustomDropdown = ({
                   )}
                 </div>
               ) : (
-                <div className="py-2">
+                <div className="py-3">
                   {filteredOptions.map((option, index) => (
                     <button
                       key={option[valueKey] || option.value}
@@ -356,6 +357,7 @@ const CustomDropdown = ({
                         hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50
                         focus:outline-none focus:bg-gradient-to-r focus:from-blue-50 focus:to-indigo-50
                         flex items-center justify-between relative
+                        mb-3 rounded-xl ${isMobile ? 'my-2' : ''}
                         ${currentSize.option}
                         ${(option[valueKey] || option.value) === value 
                           ? 'font-semibold' 

@@ -160,7 +160,11 @@ const ProductCard = ({
         {/* Action Buttons */}
         <div className={`grid ${isMobile ? 'grid-cols-1 gap-2' : 'grid-cols-3 gap-3'}`}>
           <Button
-            onClick={() => onViewStock(product)}
+            onClick={(e) => {
+              e.preventDefault()
+              e.stopPropagation()
+              onViewStock(product)
+            }}
             variant="outline"
             size="sm"
             className="flex items-center justify-center space-x-2"
@@ -170,7 +174,11 @@ const ProductCard = ({
           </Button>
           
           <Button
-            onClick={() => onEdit(product)}
+            onClick={(e) => {
+              e.preventDefault()
+              e.stopPropagation()
+              onEdit(product)
+            }}
             variant="outline"
             size="sm"
             className="flex items-center justify-center space-x-2 text-blue-600 border-blue-200 hover:bg-blue-50"
@@ -180,7 +188,11 @@ const ProductCard = ({
           </Button>
           
           <Button
-            onClick={() => onDelete(product)}
+            onClick={(e) => {
+              e.preventDefault()
+              e.stopPropagation()
+              onDelete(product)
+            }}
             variant="outline"
             size="sm"
             className="flex items-center justify-center space-x-2 text-red-600 border-red-200 hover:bg-red-50"

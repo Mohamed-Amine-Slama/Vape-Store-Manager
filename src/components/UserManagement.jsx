@@ -31,6 +31,21 @@ export default function UserManagement() {
 
   useEffect(() => {
     loadData()
+    
+    // Listen for events to close this modal when other modals open
+    const handleCloseOtherModals = (event) => {
+      if (event.detail?.source !== 'userManagement') {
+        setIsModalOpen(false)
+        setEditingUser(null)
+        setDeleteConfirm(null)
+      }
+    }
+    
+    window.addEventListener('closeOtherModals', handleCloseOtherModals)
+    
+    return () => {
+      window.removeEventListener('closeOtherModals', handleCloseOtherModals)
+    }
   }, [])
 
   const loadData = async () => {
@@ -158,6 +173,9 @@ export default function UserManagement() {
   }
 
   const handleEdit = (user) => {
+    // Close any other modals that might be open
+    window.dispatchEvent(new CustomEvent('closeOtherModals', { detail: { source: 'userManagement' } }))
+    
     setEditingUser(user)
     setErrors({})
     setIsModalOpen(true)
@@ -189,6 +207,9 @@ export default function UserManagement() {
   }
 
   const handleAddNew = () => {
+    // Close any other modals that might be open
+    window.dispatchEvent(new CustomEvent('closeOtherModals', { detail: { source: 'userManagement' } }))
+    
     setEditingUser(null)
     setErrors({})
     setIsModalOpen(true)

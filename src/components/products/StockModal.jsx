@@ -61,7 +61,7 @@ const StockModal = ({
   }
 
   return (
-    <Modal isOpen={open} onClose={onClose} size="lg">
+    <Modal isOpen={open} onClose={onClose} size="lg" zIndex={100500}>
       <div className="rounded-2xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-hidden relative" style={{ backgroundColor: 'var(--bg-card)', boxShadow: 'var(--shadow-2xl)', border: '2px solid var(--border-primary)' }}>
         {/* Top accent border */}
         <div style={{ 
@@ -72,44 +72,52 @@ const StockModal = ({
           height: '4px', 
           background: 'linear-gradient(90deg, var(--accent-vapor), var(--accent-purple))' 
         }}></div>
-        {/* Header */}
-        <div className="p-6" style={{ background: 'linear-gradient(135deg, var(--accent-vapor), var(--accent-purple))' }}>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="p-2 bg-white bg-opacity-20 rounded-xl">
-                <Package className="h-6 w-6 text-white" />
-              </div>
-              <div>
-                <h2 className="text-xl font-bold text-white">Stock Information</h2>
-                <div className="flex items-center space-x-2 mt-1">
-                  <div 
-                    className="w-3 h-3 rounded-full"
-                    style={{ backgroundColor: getCategoryDotColor(product.category) }}
-                  />
-                  <p className="text-blue-100 text-sm">{product.name}</p>
-                </div>
-              </div>
-            </div>
-            <div className="flex items-center space-x-2">
-              <button
-                onClick={onRefresh}
-                disabled={loading}
-                className="p-2 hover:bg-white hover:bg-opacity-20 rounded-lg transition-colors"
-              >
-                <RefreshCw className={`h-5 w-5 text-white ${loading ? 'animate-spin' : ''}`} />
-              </button>
-              <button
-                onClick={onClose}
-                className="p-2 hover:bg-white hover:bg-opacity-20 rounded-lg transition-colors"
-              >
-                <X className="h-5 w-5 text-white" />
-              </button>
-            </div>
-          </div>
+        
+        {/* Action Buttons */}
+        <div className="absolute top-4 right-4 z-10 flex items-center space-x-2">
+          <button
+            onClick={onRefresh}
+            disabled={loading}
+            className="p-2 rounded-lg transition-all duration-200"
+            style={{
+              background: 'var(--bg-elevated)',
+              color: 'var(--text-muted)',
+              border: '1px solid var(--border-primary)'
+            }}
+            onMouseEnter={(e) => {
+              e.target.style.color = 'var(--text-primary)'
+              e.target.style.background = 'var(--bg-hover)'
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.color = 'var(--text-muted)'
+              e.target.style.background = 'var(--bg-elevated)'
+            }}
+          >
+            <RefreshCw className={`h-5 w-5 ${loading ? 'animate-spin' : ''}`} />
+          </button>
+          <button
+            onClick={onClose}
+            className="p-2 rounded-lg transition-all duration-200"
+            style={{
+              background: 'var(--bg-elevated)',
+              color: 'var(--text-muted)',
+              border: '1px solid var(--border-primary)'
+            }}
+            onMouseEnter={(e) => {
+              e.target.style.color = 'var(--text-primary)'
+              e.target.style.background = 'var(--bg-hover)'
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.color = 'var(--text-muted)'
+              e.target.style.background = 'var(--bg-elevated)'
+            }}
+          >
+            <X className="h-5 w-5" />
+          </button>
         </div>
 
         {/* Content */}
-        <div className="p-6 overflow-y-auto max-h-[calc(90vh-120px)]">
+        <div className="p-6 pt-12 overflow-y-auto max-h-[calc(90vh-60px)]">
           {loading ? (
             <div className="flex flex-col items-center justify-center py-12">
               <div className="animate-spin rounded-full h-12 w-12 border-4 border-t-transparent mb-4" style={{ borderColor: 'var(--border-primary)', borderTopColor: 'var(--accent-vapor)' }}></div>
@@ -268,18 +276,6 @@ const StockModal = ({
           )}
         </div>
 
-        {/* Footer */}
-        <div className="px-6 py-4 rounded-b-2xl" style={{ backgroundColor: 'var(--bg-elevated)', borderTop: '1px solid var(--border-secondary)' }}>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2 text-sm" style={{ color: 'var(--text-secondary)' }}>
-              <AlertCircle className="h-4 w-4" style={{ color: 'var(--accent-vapor)' }} />
-              <span>Stock levels are updated in real-time from inventory management</span>
-            </div>
-            <Button onClick={onClose} variant="outline">
-              Close
-            </Button>
-          </div>
-        </div>
       </div>
     </Modal>
   )

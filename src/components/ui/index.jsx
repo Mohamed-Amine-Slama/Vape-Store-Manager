@@ -531,7 +531,7 @@ export function Select({
   )
 }
 
-export function Modal({ isOpen, onClose, title, children }) {
+export function Modal({ isOpen, onClose, title, children, zIndex = 99999 }) {
   if (!isOpen) return null
 
   const isMobile = window.innerWidth <= 768
@@ -610,7 +610,7 @@ export function Modal({ isOpen, onClose, title, children }) {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          zIndex: 99999,
+          zIndex: zIndex,
           padding: isMobile ? '1rem' : '2rem',
           margin: 0,
           overflowY: 'auto',
@@ -631,7 +631,7 @@ export function Modal({ isOpen, onClose, title, children }) {
             minHeight: isMobile ? '200px' : '320px',
             overflowY: 'auto',
             position: isMobile ? 'fixed' : 'relative',
-            zIndex: 100000,
+            zIndex: zIndex + 1,
             ...mobilePosition,
             WebkitOverflowScrolling: 'touch',
             overscrollBehavior: 'contain',

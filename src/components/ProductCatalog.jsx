@@ -16,12 +16,14 @@ export default function ProductCatalog() {
     filteredProducts,
     loading,
     selectedCategory,
+    searchQuery,
     error,
     success,
     categories,
     categoryColors,
     categoryStats,
     setSelectedCategory,
+    setSearchQuery,
     loadProducts,
     createProduct,
     updateProduct,
@@ -120,6 +122,8 @@ export default function ProductCatalog() {
         onRefresh={loadProducts}
         loading={loading}
         isMobile={isMobile}
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
       />
 
       {/* Success/Error Messages */}
@@ -162,17 +166,26 @@ export default function ProductCatalog() {
           <div className="text-center py-8">
             <AlertCircle className="h-12 w-12 text-gray-300 mx-auto mb-4" />
             <h3 className="text-lg font-semibold text-gray-900 mb-2">
-              {selectedCategory === 'all' ? 'No Products Found' : `No ${categories.find(c => c.value === selectedCategory)?.label} Products`}
+              {searchQuery 
+                ? 'No Products Found' 
+                : selectedCategory === 'all' 
+                  ? 'No Products Found' 
+                  : `No ${categories.find(c => c.value === selectedCategory)?.label} Products`
+              }
             </h3>
             <p className="text-gray-600 mb-4">
-              {selectedCategory === 'all' 
-                ? 'Get started by adding your first product to the catalog.'
-                : `No products found in the ${categories.find(c => c.value === selectedCategory)?.label} category.`
+              {searchQuery 
+                ? `No products found matching "${searchQuery}". Try adjusting your search terms.`
+                : selectedCategory === 'all' 
+                  ? 'Get started by adding your first product to the catalog.'
+                  : `No products found in the ${categories.find(c => c.value === selectedCategory)?.label} category.`
               }
             </p>
-            <AddButton onClick={handleAddProduct} className="mt-2">
-              Add Your First Product
-            </AddButton>
+            {!searchQuery && (
+              <AddButton onClick={handleAddProduct} className="mt-2">
+                Add Your First Product
+              </AddButton>
+            )}
           </div>
         </Card>
       )}
