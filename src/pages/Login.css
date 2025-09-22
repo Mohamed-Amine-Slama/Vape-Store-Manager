@@ -545,20 +545,6 @@
   background: var(--login-secondary-gradient);
 }
 
-.login-store-card.login-quick-login {
-  background: rgba(16, 185, 129, 0.2);
-  border-color: var(--accent-neon);
-}
-
-.login-store-card.login-quick-login:hover {
-  background: rgba(16, 185, 129, 0.3);
-  border-color: var(--accent-neon);
-  box-shadow: var(--shadow-glow-neon), var(--shadow-2xl);
-}
-
-.login-store-card.login-quick-login .login-store-icon.login-quick {
-  background: var(--login-success-gradient);
-}
 
 /* Warning Notice */
 .warning-notice {

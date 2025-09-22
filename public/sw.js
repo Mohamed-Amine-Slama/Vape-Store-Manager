@@ -1,6 +1,6 @@
-const CACHE_NAME = 'vape-store-manager-v1.0.0'
-const STATIC_CACHE_NAME = 'vape-store-static-v1.0.0'
-const DYNAMIC_CACHE_NAME = 'vape-store-dynamic-v1.0.0'
+const CACHE_NAME = 'vape-store-manager-v1.0.1'
+const STATIC_CACHE_NAME = 'vape-store-static-v1.0.1'
+const DYNAMIC_CACHE_NAME = 'vape-store-dynamic-v1.0.1'
 
 // Assets to cache immediately
 const STATIC_ASSETS = [
@@ -63,18 +63,33 @@ self.addEventListener('activate', (event) => {
   )
 })
 
-// Fetch event - serve from cache, fallback to network
+// Fetch event - serve from cache when possible
 self.addEventListener('fetch', (event) => {
-  const { request } = event
-  const url = new URL(request.url)
+  const request = event.request
   
   // Skip non-GET requests
   if (request.method !== 'GET') {
     return
   }
   
-  // Skip external requests
-  if (url.origin !== location.origin) {
+  // Skip chrome-extension and other non-http requests
+  if (!request.url.startsWith('http')) {
+    return
+  }
+  
+  // Skip caching in development mode (localhost) and for critical app files
+  if (request.url.includes('localhost') || request.url.includes('127.0.0.1')) {
+    event.respondWith(fetch(request))
+    return
+  }
+  
+  // Also skip caching for main app files that need to be fresh
+  if (request.url.includes('/src/') || 
+      request.url.includes('main.jsx') || 
+      request.url.includes('App.jsx') ||
+      request.url.includes('AuthContext.jsx') ||
+      request.url.includes('LoadingScreen.jsx')) {
+    event.respondWith(fetch(request))
     return
   }
   

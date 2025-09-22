@@ -15,14 +15,28 @@ export function useAuth() {
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [initialLoading, setInitialLoading] = useState(true)
 
   useEffect(() => {
-    // Check if user is stored in localStorage
-    const storedUser = localStorage.getItem('vape-store-user')
-    if (storedUser) {
-      setUser(JSON.parse(storedUser))
+    // Simulate initial app loading time for data retrieval
+    const initializeApp = async () => {
+      // Show loading screen for minimum 3 seconds to allow backend data retrieval
+      const minLoadingTime = new Promise(resolve => setTimeout(resolve, 3000))
+      
+      // Check if user is stored in localStorage
+      const storedUser = localStorage.getItem('vape-store-user')
+      if (storedUser) {
+        setUser(JSON.parse(storedUser))
+      }
+      
+      // Wait for minimum loading time
+      await minLoadingTime
+      
+      setInitialLoading(false)
+      setLoading(false)
     }
-    setLoading(false)
+
+    initializeApp()
   }, [])
 
   const login = async (pin, storeId) => {
@@ -205,6 +219,7 @@ export function AuthProvider({ children }) {
     logout,
     refreshUser,
     loading,
+    initialLoading,
     isWorker: user?.role === 'worker',
     isAdmin: user?.role === 'admin',
   }

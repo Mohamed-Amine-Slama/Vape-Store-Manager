@@ -5,6 +5,7 @@ import Login from './pages/Login'
 import Worker from './pages/Worker'
 import Admin from './pages/Admin'
 import InstallPrompt from './components/ui/InstallPrompt'
+import LoadingScreen from './components/ui/LoadingScreen'
 
 function ProtectedRoute({ children, allowedRoles = [] }) {
   const { user, loading } = useAuth()
@@ -29,7 +30,12 @@ function ProtectedRoute({ children, allowedRoles = [] }) {
 }
 
 function AppRoutes() {
-  const { user } = useAuth()
+  const { user, initialLoading } = useAuth()
+
+  // Show loading screen during initial app load
+  if (initialLoading) {
+    return <LoadingScreen />
+  }
 
   return (
     <Routes>

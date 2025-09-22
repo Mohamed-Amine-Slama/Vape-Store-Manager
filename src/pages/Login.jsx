@@ -38,7 +38,7 @@ export default function Login() {
       
       // If no stores found, we can still allow admin login
       if (!data || data.length === 0) {
-        setError('⚠️ Database not set up yet. Please run the schema.sql file in Supabase, then use Admin Dashboard or Quick Login.')
+        setError('⚠️ Database not set up yet. Please run the schema.sql file in Supabase, then use Admin Dashboard.')
       } else {
         setError('') // Clear any previous errors
       }
@@ -113,9 +113,7 @@ export default function Login() {
 
   const selectedStoreName = selectedStore === 'admin' 
     ? 'Admin Dashboard' 
-    : selectedStore === 'quick-login'
-      ? 'Quick Login'
-      : stores.find(store => store.id === selectedStore)?.name || ''
+    : stores.find(store => store.id === selectedStore)?.name || ''
 
   return (
     <div className="login-container">
@@ -202,29 +200,6 @@ export default function Login() {
                     <div className="login-store-arrow">→</div>
                   </button>
 
-                  {/* Fallback Quick Login if no stores are available */}
-                  {stores.length === 0 && (
-                    <>
-                      <div className="warning-notice">
-                        <div className="warning-icon">⚠️</div>
-                        <p>Store data unavailable. Use Quick Login to access the system.</p>
-                      </div>
-                      <button
-                        onClick={() => handleStoreSelect('quick-login')}
-                        className="login-store-card login-quick-login"
-                        disabled={loading}
-                      >
-                        <div className="login-store-icon login-quick">
-                          <Zap />
-                        </div>
-                        <div className="login-store-info">
-                          <h3>Quick Login</h3>
-                          <p>Direct PIN access</p>
-                        </div>
-                        <div className="login-store-arrow">→</div>
-                      </button>
-                    </>
-                  )}
                 </div>
               </div>
             ) : (
