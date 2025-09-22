@@ -11,6 +11,7 @@ import ProductCatalog from '../components/ProductCatalog'
 import InventoryManager from '../components/InventoryManager'
 import NotificationsPopup from '../components/NotificationsPopup'
 import FDManagement from '../components/FDManagement'
+import NotificationSettings from '../components/admin/NotificationSettings'
 import { exportToCSV } from '../lib/utils'
 import { supabase } from '../lib/supabase'
 import { 
@@ -92,6 +93,12 @@ export default function Admin() {
       label: 'FD Management', 
       icon: DollarSign,
       description: 'Font de Caisse Records'
+    },
+    { 
+      id: 'notifications', 
+      label: 'Push Notifications', 
+      icon: Bell,
+      description: 'Mobile Notification Settings'
     },
   ]
 
@@ -279,6 +286,12 @@ export default function Admin() {
         return (
           <div className="fade-in">
             <FDManagement />
+          </div>
+        )
+      case 'notifications':
+        return (
+          <div className="fade-in">
+            <NotificationSettings />
           </div>
         )
       default:

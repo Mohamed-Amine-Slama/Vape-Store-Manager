@@ -1,6 +1,6 @@
-const CACHE_NAME = 'vape-store-manager-v1.0.1'
-const STATIC_CACHE_NAME = 'vape-store-static-v1.0.1'
-const DYNAMIC_CACHE_NAME = 'vape-store-dynamic-v1.0.1'
+const CACHE_NAME = 'vape-store-manager-v1.0.2'
+const STATIC_CACHE_NAME = 'vape-store-static-v1.0.2'
+const DYNAMIC_CACHE_NAME = 'vape-store-dynamic-v1.0.2'
 
 // Assets to cache immediately
 const STATIC_ASSETS = [
@@ -246,4 +246,89 @@ self.addEventListener('message', (event) => {
   if (event.data && event.data.type === 'GET_VERSION') {
     event.ports[0].postMessage({ version: CACHE_NAME })
   }
+})
+
+// Push notification event handler
+self.addEventListener('push', (event) => {
+  console.log('Push notification received:', event)
+  
+  let notificationData = {
+    title: 'Vape Store Manager',
+    body: 'New notification received',
+    icon: '/pwa-192x192.png',
+    badge: '/pwa-192x192.png',
+    tag: 'vape-store-notification',
+    requireInteraction: true,
+    actions: [
+      {
+        action: 'view',
+        title: 'View',
+        icon: '/pwa-192x192.png'
+      },
+      {
+        action: 'dismiss',
+        title: 'Dismiss'
+      }
+    ],
+    data: {
+      url: '/admin',
+      timestamp: Date.now()
+    }
+  }
+  
+  // Parse push data if available
+  if (event.data) {
+    try {
+      const pushData = event.data.json()
+      notificationData = {
+        ...notificationData,
+        ...pushData
+      }
+    } catch (error) {
+      console.error('Error parsing push data:', error)
+    }
+  }
+  
+  event.waitUntil(
+    self.registration.showNotification(notificationData.title, notificationData)
+  )
+})
+
+// Notification click event handler
+self.addEventListener('notificationclick', (event) => {
+  console.log('Notification clicked:', event.notification)
+  
+  event.notification.close()
+  
+  if (event.action === 'dismiss') {
+    return
+  }
+  
+  // Default action or 'view' action
+  const urlToOpen = event.notification.data?.url || '/admin'
+  
+  event.waitUntil(
+    clients.matchAll({ type: 'window', includeUncontrolled: true })
+      .then((clientList) => {
+        // Check if there's already a window/tab open with the target URL
+        for (const client of clientList) {
+          if (client.url.includes(urlToOpen.split('?')[0]) && 'focus' in client) {
+            return client.focus()
+          }
+        }
+        
+        // If no existing window, open a new one
+        if (clients.openWindow) {
+          return clients.openWindow(urlToOpen)
+        }
+      })
+  )
+})
+
+// Notification close event handler
+self.addEventListener('notificationclose', (event) => {
+  console.log('Notification closed:', event.notification)
+  
+  // Optional: Track notification dismissal analytics
+  // You can send analytics data here if needed
 })

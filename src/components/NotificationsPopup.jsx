@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import { supabase } from '../lib/supabase'
 import { formatCurrency, formatDateTime } from '../lib/utils'
 import { Bell, X, CheckCircle, Trash2, Calendar, CheckSquare, Square, AlertTriangle, Clock, DollarSign, Package2, Users, TrendingUp } from 'lucide-react'
+import { usePushNotifications } from '../hooks/usePushNotifications'
 import './NotificationsPopup.css'
 
 export default function NotificationsPopup({ isOpen, onClose }) {
@@ -11,6 +12,9 @@ export default function NotificationsPopup({ isOpen, onClose }) {
   const [selectedNotifications, setSelectedNotifications] = useState([])
   const subscriptionRef = useRef(null)
   const [processingIds, setProcessingIds] = useState(new Set())
+  
+  // Push notifications hook
+  const { sendAdminNotification, isSubscribed } = usePushNotifications()
 
   useEffect(() => {
     if (isOpen) {
@@ -26,7 +30,7 @@ export default function NotificationsPopup({ isOpen, onClose }) {
         .channel('notifications_' + Date.now()) // Unique channel name
         .on('postgres_changes', 
           { event: 'INSERT', schema: 'public', table: 'notifications' },
-          (payload) => {
+          async (payload) => {
             setNotifications(prev => {
               // Check if notification already exists to prevent duplicates
               const exists = prev.some(notif => notif.id === payload.new.id)
@@ -35,6 +39,28 @@ export default function NotificationsPopup({ isOpen, onClose }) {
               }
               return [payload.new, ...prev]
             })
+            
+            // Send push notification to admin if subscribed
+            if (isSubscribed && payload.new) {
+              try {
+                const notification = payload.new
+                const notificationTitle = getNotificationTitle(notification)
+                const notificationBody = getNotificationBody(notification)
+                
+                await sendAdminNotification({
+                  title: notificationTitle,
+                  body: notificationBody,
+                  type: notification.type,
+                  storeId: notification.store_id,
+                  data: {
+                    notificationId: notification.id,
+                    timestamp: notification.created_at
+                  }
+                })
+              } catch (error) {
+                console.error('Failed to send push notification:', error)
+              }
+            }
           }
         )
         .on('postgres_changes',
@@ -652,6 +678,47 @@ export default function NotificationsPopup({ isOpen, onClose }) {
   )
 
   return modalContent
+}
+
+// Helper functions for push notifications
+function getNotificationTitle(notification) {
+  switch (notification.type) {
+    case 'shift_end':
+      return '🔄 Shift Ended'
+    case 'low_stock':
+      return '📦 Low Stock Alert'
+    case 'high_sales':
+      return '💰 High Sales Alert'
+    case 'worker_login':
+      return '👤 Worker Login'
+    case 'system':
+      return '⚙️ System Notification'
+    case 'fd_entry':
+      return '💵 FD Entry'
+    default:
+      return '🔔 New Notification'
+  }
+}
+
+function getNotificationBody(notification) {
+  const storeName = notification.store_name || `Store ${notification.store_id}`
+  
+  switch (notification.type) {
+    case 'shift_end':
+      return `${notification.worker_name || 'A worker'} ended their shift at ${storeName}`
+    case 'low_stock':
+      return `Low stock detected at ${storeName}. Check inventory levels.`
+    case 'high_sales':
+      return `High sales activity at ${storeName}. ${notification.message || ''}`
+    case 'worker_login':
+      return `${notification.worker_name || 'A worker'} logged in at ${storeName}`
+    case 'system':
+      return notification.message || 'System notification received'
+    case 'fd_entry':
+      return `FD entry recorded at ${storeName}. Amount: ${notification.message || 'N/A'}`
+    default:
+      return notification.message || 'You have a new notification'
+  }
 }
 
 // CSS for slide-in animation (add to your global CSS or component styles)
