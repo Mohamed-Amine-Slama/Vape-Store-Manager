@@ -1,4 +1,20 @@
-/* Vape Store Login - Dark Theme Professional */
+/* Vape Store Login - Dark Theme Professional - iOS Optimized */
+
+/* iOS Performance Optimizations */
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Force hardware acceleration for key elements */
+.pin-button,
+.login-store-card,
+.submit-button {
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  will-change: transform;
+}
+
 .login-container {
   /* Use global dark theme variables */
   --login-primary-gradient: var(--gradient-vapor);
@@ -78,7 +94,7 @@
   animation: shimmer 8s ease infinite;
 }
 
-/* Floating Elements */
+/* Floating Elements - Simplified for iOS Performance */
 .floating-elements {
   position: absolute;
   top: 0;
@@ -87,51 +103,55 @@
   bottom: 0;
   pointer-events: none;
   overflow: hidden;
+  /* Disable on mobile for performance */
 }
 
-.floating-element {
-  position: absolute;
-  background: rgba(0, 212, 255, 0.1);
-  border-radius: 50%;
-  backdrop-filter: blur(4px);
-  box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
-  animation: float 20s ease-in-out infinite;
+@media (min-width: 769px) {
+  .floating-element {
+    position: absolute;
+    background: rgba(0, 212, 255, 0.05);
+    border-radius: 50%;
+    animation: floatSimple 15s ease-in-out infinite;
+  }
+
+  .floating-element-1 {
+    width: 80px;
+    height: 80px;
+    top: 10%;
+    left: 10%;
+    animation-delay: 0s;
+  }
+
+  .floating-element-2 {
+    width: 60px;
+    height: 60px;
+    top: 20%;
+    right: 15%;
+    animation-delay: -5s;
+  }
+
+  .floating-element-3 {
+    width: 40px;
+    height: 40px;
+    bottom: 20%;
+    left: 20%;
+    animation-delay: -10s;
+  }
+
+  .floating-element-4 {
+    width: 70px;
+    height: 70px;
+    bottom: 15%;
+    right: 10%;
+    animation-delay: -15s;
+  }
 }
 
-.floating-element-1 {
-  width: 120px;
-  height: 120px;
-  top: 10%;
-  left: 10%;
-  animation-delay: 0s;
-  animation-duration: 25s;
-}
-
-.floating-element-2 {
-  width: 80px;
-  height: 80px;
-  top: 20%;
-  right: 15%;
-  animation-delay: -5s;
-  animation-duration: 30s;
-}
-
-.floating-element-3 {
-  width: 60px;
-  height: 60px;
-  bottom: 20%;
-  left: 20%;
-  animation-delay: -10s;
-  animation-duration: 35s;
-}
-
-.floating-element-4 {
-  width: 100px;
-  height: 100px;
-  bottom: 15%;
-  right: 10%;
-  animation-delay: -15s;
-  animation-duration: 28s;
+/* Hide floating elements on mobile */
+@media (max-width: 768px) {
+  .floating-element {
+    display: none;
+  }
 }
 
 /* Keyframe Animations */
@@ -154,17 +174,14 @@
   50% { opacity: 1; }
 }
 
-@keyframes float {
-  0%, 100% { transform: translateY(0px) translateX(0px) rotate(0deg); }
-  25% { transform: translateY(-20px) translateX(10px) rotate(5deg); }
-  50% { transform: translateY(-10px) translateX(-15px) rotate(-3deg); }
-  75% { transform: translateY(-30px) translateX(5px) rotate(2deg); }
+@keyframes floatSimple {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-15px); }
 }
 
-/* Main Login Card */
+/* Main Login Card - Optimized for iOS */
 .login-card {
   background: var(--login-glass-bg);
-  backdrop-filter: var(--login-backdrop-blur);
   border: 2px solid var(--login-glass-border);
   border-radius: var(--login-border-radius-lg);
   padding: var(--login-spacing-xl);
@@ -172,13 +189,16 @@
   width: 100%;
   position: relative;
   overflow: hidden;
-  box-shadow: 
-    var(--login-glass-shadow),
-    0 15px 35px -5px rgba(0, 0, 0, 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1),
-    inset 0 -1px 0 rgba(255, 255, 255, 0.05);
-  transition: all var(--login-transition-slow);
-  animation: cardEntrance 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  box-shadow: var(--login-glass-shadow);
+  transition: transform 0.2s ease;
+  animation: cardEntrance 0.6s ease-out forwards;
+}
+
+/* Add backdrop-filter only on desktop */
+@media (min-width: 769px) {
+  .login-card {
+    backdrop-filter: var(--login-backdrop-blur);
+  }
 }
 
 .login-card::before {
@@ -375,41 +395,60 @@
 
 .login-store-card {
   background: var(--bg-glass);
-  backdrop-filter: var(--login-backdrop-blur);
   border: 2px solid var(--login-glass-border);
   border-radius: var(--login-border-radius);
   padding: var(--login-spacing-md);
   cursor: pointer;
-  transition: all var(--login-transition-normal);
+  transition: transform 0.2s ease, border-color 0.2s ease;
   position: relative;
   overflow: hidden;
   display: flex;
   align-items: center;
   gap: var(--login-spacing-sm);
   box-shadow: var(--shadow-xl);
+  /* iOS touch optimization */
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
 
-.login-store-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.1), transparent);
-  transition: left var(--login-transition-slow);
-  z-index: 1;
+/* Add backdrop-filter only on desktop */
+@media (min-width: 769px) {
+  .login-store-card {
+    backdrop-filter: var(--login-backdrop-blur);
+  }
 }
 
-.login-store-card:hover::before {
-  left: 100%;
+/* Remove heavy hover effects on mobile */
+@media (min-width: 769px) {
+  .login-store-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.1), transparent);
+    transition: left 0.3s ease;
+    z-index: 1;
+  }
+
+  .login-store-card:hover::before {
+    left: 100%;
+  }
 }
 
 .login-store-card:hover {
-  background: rgba(30, 30, 46, 0.9);
   border-color: var(--accent-vapor);
-  transform: translateY(-2px) scale(1.02);
-  box-shadow: var(--shadow-glow), var(--shadow-2xl);
+  transform: translateY(-1px);
+}
+
+/* Enhanced hover effects only on desktop */
+@media (min-width: 769px) {
+  .login-store-card:hover {
+    background: rgba(30, 30, 46, 0.9);
+    transform: translateY(-2px) scale(1.01);
+    box-shadow: var(--shadow-glow), var(--shadow-2xl);
+  }
 }
 
 .login-store-card:active {
@@ -631,14 +670,13 @@
   height: 16px;
 }
 
-/* PIN Display Container */
+/* PIN Display Container - Optimized */
 .pin-display-container {
   margin-bottom: var(--login-spacing-lg);
 }
 
 .pin-display {
   background: rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(15px);
   border: 2px solid rgba(255, 255, 255, 0.15);
   border-radius: var(--login-border-radius);
   padding: var(--login-spacing-md);
@@ -646,10 +684,15 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--login-spacing-sm);
-  transition: all var(--login-transition-normal);
-  box-shadow: 
-    0 8px 16px -4px rgba(0, 0, 0, 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  transition: border-color 0.2s ease;
+  box-shadow: 0 4px 8px -2px rgba(0, 0, 0, 0.1);
+}
+
+/* Add backdrop-filter only on desktop */
+@media (min-width: 769px) {
+  .pin-display {
+    backdrop-filter: blur(10px);
+  }
 }
 
 .pin-display:hover {
@@ -736,19 +779,32 @@
 
 .pin-button {
   background: var(--bg-glass);
-  backdrop-filter: blur(15px);
   border: 2px solid var(--login-glass-border);
   border-radius: var(--login-border-radius);
   padding: var(--login-spacing-md);
   min-height: 64px;
   cursor: pointer;
-  transition: all var(--login-transition-normal);
+  transition: transform 0.15s ease, border-color 0.15s ease;
   position: relative;
   overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
   box-shadow: var(--shadow-md);
+  /* Optimize for touch */
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  /* Force hardware acceleration */
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+/* Add backdrop-filter only on desktop */
+@media (min-width: 769px) {
+  .pin-button {
+    backdrop-filter: blur(10px);
+  }
 }
 
 .pin-button-text {
@@ -765,33 +821,28 @@
   font-weight: 500;
 }
 
+/* Remove ripple effects for better iOS performance */
 .pin-button-ripple {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 0;
-  height: 0;
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
-  transition: all var(--login-transition-fast);
-  z-index: 1;
+  display: none;
 }
 
 .pin-button:hover {
-  background: rgba(30, 30, 46, 0.9);
   border-color: var(--accent-vapor);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-glow), var(--shadow-lg);
+  transform: translateY(-1px);
 }
 
 .pin-button:active {
-  transform: translateY(0) scale(0.98);
+  transform: scale(0.95);
+  border-color: var(--accent-vapor);
 }
 
-.pin-button:active .pin-button-ripple {
-  width: 100px;
-  height: 100px;
+/* Enhanced hover effects only on desktop */
+@media (min-width: 769px) {
+  .pin-button:hover {
+    background: rgba(30, 30, 46, 0.9);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-glow), var(--shadow-lg);
+  }
 }
 
 .pin-button:disabled {
@@ -808,12 +859,15 @@
   border-radius: var(--login-border-radius);
   padding: var(--login-spacing-md) var(--login-spacing-lg);
   cursor: pointer;
-  transition: all var(--login-transition-normal);
+  transition: transform 0.2s ease, opacity 0.2s ease;
   position: relative;
   overflow: hidden;
   box-shadow: var(--shadow-lg);
   opacity: 0.6;
   transform: scale(0.98);
+  /* iOS touch optimization */
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
 
 .submit-button.ready {
@@ -823,8 +877,15 @@
 }
 
 .submit-button:hover:not(:disabled) {
-  transform: translateY(-2px) scale(1.02);
-  box-shadow: var(--shadow-glow), var(--shadow-2xl);
+  transform: translateY(-1px);
+}
+
+/* Enhanced hover effects only on desktop */
+@media (min-width: 769px) {
+  .submit-button:hover:not(:disabled) {
+    transform: translateY(-2px) scale(1.01);
+    box-shadow: var(--shadow-glow), var(--shadow-2xl);
+  }
 }
 
 .submit-button:active:not(:disabled) {
@@ -865,19 +926,9 @@
   animation: spin 1s linear infinite;
 }
 
+/* Remove submit ripple for better performance */
 .submit-ripple {
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-  transition: left var(--login-transition-slow);
-  z-index: 1;
-}
-
-.submit-button:hover:not(:disabled) .submit-ripple {
-  left: 100%;
+  display: none;
 }
 
 /* Additional Keyframe Animations */
@@ -912,16 +963,35 @@
   100% { transform: rotate(360deg); }
 }
 
-/* Mobile Responsiveness */
+/* Mobile Responsiveness - iOS Optimized */
 @media (max-width: 640px) {
+  /* Disable all heavy effects on mobile */
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.15s !important;
+  }
+  
   .login-container {
     padding: var(--login-spacing-sm);
+    /* Disable heavy background effects on mobile */
+    background: var(--bg-primary);
+    background-image: none;
+    animation: none;
+  }
+  
+  .login-container::before,
+  .login-container::after {
+    display: none;
   }
   
   .login-card {
     padding: var(--login-spacing-lg);
     border-radius: var(--login-border-radius);
     max-width: 100%;
+    /* Simplified background for mobile */
+    background: rgba(30, 30, 46, 0.95);
+    backdrop-filter: none;
   }
   
   .logo-icon {
@@ -987,6 +1057,12 @@
   .pin-button {
     min-height: 56px;
     padding: var(--login-spacing-sm);
+    /* iOS touch optimization */
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+    /* Faster transitions on mobile */
+    transition: transform 0.1s ease, border-color 0.1s ease;
   }
   
   .pin-button-text {
@@ -1007,8 +1083,15 @@
 }
 
 @media (max-width: 480px) {
+  /* Ultra-fast mode for small screens */
+  * {
+    transition-duration: 0.1s !important;
+  }
+  
   .login-card {
     padding: var(--login-spacing-md);
+    /* Further simplify for small screens */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   }
   
   .logo-icon {
@@ -1030,7 +1113,11 @@
   }
   
   .pin-button {
-    min-height: 48px;
+    min-height: 52px;
+    /* Larger touch targets for iOS */
+    font-size: 1.2rem;
+    /* Instant feedback on small screens */
+    transition: transform 0.05s ease;
   }
   
   .pin-button-text {

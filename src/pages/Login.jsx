@@ -98,12 +98,12 @@ export default function Login() {
 
   const handlePinInput = (digit) => {
     if (pin.length < 6) {
-      setPin(pin + digit)
+      setPin(prev => prev + digit)
     }
   }
 
   const handleBackspace = () => {
-    setPin(pin.slice(0, -1))
+    setPin(prev => prev.slice(0, -1))
   }
 
   const handleClear = () => {
@@ -262,7 +262,6 @@ export default function Login() {
                         disabled={loading || pin.length >= 6}
                       >
                         <span className="pin-button-text">{digit}</span>
-                        <div className="pin-button-ripple"></div>
                       </button>
                     ))}
                     
@@ -274,7 +273,6 @@ export default function Login() {
                       disabled={loading}
                     >
                       <span className="pin-button-text">Clear</span>
-                      <div className="pin-button-ripple"></div>
                     </button>
                     
                     <button
@@ -284,7 +282,6 @@ export default function Login() {
                       disabled={loading || pin.length >= 6}
                     >
                       <span className="pin-button-text">0</span>
-                      <div className="pin-button-ripple"></div>
                     </button>
                     
                     <button
@@ -294,7 +291,6 @@ export default function Login() {
                       disabled={loading || pin.length === 0}
                     >
                       <span className="pin-button-text">⌫</span>
-                      <div className="pin-button-ripple"></div>
                     </button>
                   </div>
 
@@ -317,7 +313,6 @@ export default function Login() {
                         </>
                       )}
                     </div>
-                    <div className="submit-ripple"></div>
                   </button>
                 </form>
               </div>
